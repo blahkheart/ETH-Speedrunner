@@ -151,6 +151,7 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
         if (callback && typeof callback === "function") {
           callback(e);
         }
+        const { emitter, result } = notify.transaction();
       }
     };
   }
