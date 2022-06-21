@@ -17,15 +17,16 @@ contract YourCollectible is
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor() ERC721("YourCollectible", "YCB") {}
+    constructor() ERC721("Dread Gang NFT", "DADA") {}
 
     function _baseURI() internal pure override returns (string memory) {
         return "https://ipfs.io/ipfs/";
     }
 
     _modifier onlyMember() {
-        
+
     }
+    
     function mintItem(address to, string memory uri) public returns (uint256) {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();

@@ -519,6 +519,33 @@ function App(props) {
   // the json for the nfts
   const json = {
     1: {
+      description: "The OG Dada G",
+      image: "https://ipfs.io/ipfs/bafkreihpbieylklngjykmaz6hcnpsk22lw5ayvaw3mg4vzora43jqry5c4",
+      name: "Dada G",
+      attributes: [
+        {
+          trait_type: "BackgroundColor",
+          value: "Transparent",
+        },
+	      {
+          trait_type: "Hair",
+          value: "Dreadlocks",
+        },
+        {
+          trait_type: "Eyes",
+          value: "Dots",
+        },
+        {
+          trait_type: "Accessories",
+          value: "Blazer",
+        },
+ 	      {
+          trait_type: "Gadget",
+          value: "Phone",
+        },
+      ],
+    },
+    7: {
       description: "It's actually a bison?",
       external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
       image: "https://austingriffith.com/images/paintings/buffalo.jpg",
