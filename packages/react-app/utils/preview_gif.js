@@ -1,7 +1,7 @@
 const basePath = process.cwd();
 const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
-const buildDir = `${basePath}/build`;
+const buildDir = `${basePath}/output`;
 const imageDir = `${buildDir}/images`;
 const { format, preview_gif } = require(`${basePath}/src/config.js`);
 const canvas = createCanvas(format.width, format.height);

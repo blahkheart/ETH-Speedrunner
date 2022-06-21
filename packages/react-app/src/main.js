@@ -6,7 +6,7 @@ const newPath = path.join(path.basename(path.dirname(basePath)), '..', 'node_mod
 // const sha1 = require(`${newPath}/sha1`);
 const sha1 = require('sha1');
 const { createCanvas, loadImage } = require('canvas');
-const buildDir = `${basePath}/build`;
+const buildDir = `${basePath}/output`;
 const layersDir = `${basePath}/layers`;
 const {
   format,
