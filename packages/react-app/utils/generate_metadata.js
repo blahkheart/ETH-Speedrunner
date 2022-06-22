@@ -2,8 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const { createCanvas, loadImage } = require("canvas");
 const basePath = process.cwd();
-const buildDir = `${basePath}/output/json`;
-const inputDir = `${basePath}/output/images`;
+const buildDir = `${basePath}/src/output/json`;
+const inputDir = `${basePath}/src/output/images`;
 const {
   format,
   namePrefix,

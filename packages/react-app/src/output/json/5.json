@@ -1,10 +1,10 @@
 {
-  "name": "Your Collection #4",
+  "name": "Your Collection #5",
   "description": "Remember to replace this description",
-  "image": "ipfs://NewUriToReplace/4.png",
-  "dna": "a07a9dad7fa467f9841644fe96e551bec34fca68",
-  "edition": 4,
-  "date": 1655807722118,
+  "image": "ipfs://NewUriToReplace/5.png",
+  "dna": "286d53c27fa6498baf7003aa85a5aab0f72e0264",
+  "edition": 5,
+  "date": 1655830869713,
   "attributes": [
     {
       "trait_type": "Background",
@@ -12,11 +12,11 @@
     },
     {
       "trait_type": "Eyeball",
-      "value": "Red"
+      "value": "White"
     },
     {
       "trait_type": "Eye color",
-      "value": "Yellow"
+      "value": "Red"
     },
     {
       "trait_type": "Iris",
@@ -28,11 +28,11 @@
     },
     {
       "trait_type": "Bottom lid",
-      "value": "Middle"
+      "value": "Low"
     },
     {
       "trait_type": "Top lid",
-      "value": "Middle"
+      "value": "Low"
     }
   ],
   "compiler": "HashLips Art Engine"
