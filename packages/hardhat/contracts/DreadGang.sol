@@ -135,11 +135,11 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     require(!paused, "Minting is on pause.");
     require(supply < maxSupply, "Minting over");
     require(squadMember[msg.sender] == false, "Already part of the squad");
-    require(_hasValidMintKey(msg.sender) == true, "only members can mint");
-    squadMember[msg.sender] = true;
 
-    // if (msg.sender != owner()) {
-    // }
+    if (msg.sender != owner()) {
+      require(_hasValidMintKey(msg.sender) == true, "only members can mint");
+      squadMember[msg.sender] = true;
+    }
     _tokenIdCounter.increment();
     uint256 tokenId = _tokenIdCounter.current();
       _safeMint(to, tokenId);

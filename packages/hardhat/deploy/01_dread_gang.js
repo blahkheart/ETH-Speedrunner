@@ -6,7 +6,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
-  
+  const ownerAddress = "0xCA7632327567796e51920F6b16373e92c7823854";
   // Getting a previously deployed contract
   const dgToken = await ethers.getContract("DGToken", deployer);
 
@@ -25,7 +25,12 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     log: true,
   });
 
-
+  const dreadGang = await ethers.getContract("DreadGang", deployer);
+  // To take ownership of yourContract
+  // address you want to be the owner.
+  const tx = await dreadGang.transferOwnership(ownerAddress);
+  console.log("Transferring ownership to::", ownerAddress);
+  console.log("Transfer Completed with txn hash:", tx.hash);
   // ToDo: Verify your contract with Etherscan for public chains
   // if (chainId !== "31337") {
   //   try {

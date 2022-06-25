@@ -58,6 +58,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
+// const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
@@ -273,18 +274,25 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
+  // DreadGang Contract Address
+  const dreadGangAddress = readContracts && readContracts.DreadGang && readContracts.DreadGang.address;
+
+  // DGToken Address
+  const dgTokenAddress = readContracts && readContracts.DGToken && readContracts.DGToken.address;
+
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "DreadGang", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "DreadGang", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
+  console.log("YOUR BALANCE:::", yourBalance);
   const [yourCollectibles, setYourCollectibles] = useState();
 
   useEffect(() => {
@@ -293,9 +301,9 @@ function App(props) {
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          const tokenId = await readContracts.DreadGang.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId.toNumber());
+          const tokenURI = await readContracts.DreadGang.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
 
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
@@ -678,8 +686,8 @@ function App(props) {
     console.log("Uploaded Hash: ", uploaded);
     const result = tx(
       writeContracts &&
-        writeContracts.YourCollectible &&
-        writeContracts.YourCollectible.mintItem(address, uploaded.path),
+        writeContracts.DreadGang &&
+        writeContracts.DreadGang.mintItem(address, uploaded.path),
       update => {
         console.log("📡 Transaction Update:", update);
         if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -775,7 +783,7 @@ function App(props) {
                 bordered
                 dataSource={yourCollectibles}
                 renderItem={item => {
-                  const id = item.id.toNumber();
+                  const id = item.id.toNumber ();
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
@@ -812,7 +820,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.DreadGang.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
@@ -919,7 +927,7 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="YourCollectible"
+              name="DreadGang"
               signer={userSigner}
               provider={localProvider}
               address={address}
