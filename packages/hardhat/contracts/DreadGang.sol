@@ -7,8 +7,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./interface/IUnlockV11";
-import "./interface/IPublicLockV10";
+import "./interface/IUnlockV11.sol";
+import "./interface/IPublicLockV10.sol";
+import "./DGToken.sol";
 
 
 /**
@@ -27,6 +28,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
   bool public paused = false;
   bool public revealed = false;
   string public notRevealedUri;
+  uint256 _optionId;
   Counters.Counter private _tokenIdCounter;
 
   address public unlockRinkeby = 0xD8C88BE5e8EB88E38E6ff5cE186d764676012B0b;
@@ -40,22 +42,41 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
 
   mapping(address => bool) private squadMember;
   mapping(address => mapping(address => bool))private multiMintKeyUsed;
+  DGToken public dgToken;
 
   constructor(
     string memory _name,
     string memory _symbol,
     string memory _initBaseURI,
     string memory _initNotRevealedUri,
-    IPublicLock _mintLockAddress
+    IPublicLock _mintLockAddress,
+    address _dgTokenAddr
   ) ERC721(_name, _symbol) {
     setBaseURI(_initBaseURI);
     setNotRevealedURI(_initNotRevealedUri);
     _setMintLockAddr(_mintLockAddress);
+    dgToken = DGToken(_dgTokenAddr);
   }
 
   modifier onlyMember {
     require(squadMember[msg.sender] == true, "You do not have a valid key to access this functionality");
     _;
+  }
+
+  function _setOptionId (IPublicLock _lock) private returns(uint){
+    IPublicLock lock = _lock;
+    bool hasKey = lock.getHasValidKey(msg.sender);
+    require(hasKey == true, "");
+    address mintLockAddress = address(mintLock);
+    address multiMintLockAddress = address(multiMintLock);
+    if(mintLockAddress == address(lock)){
+        _optionId = 0;
+    } else if (multiMintLockAddress == address(lock)) {
+        _optionId = 1;
+    } else {
+        _optionId = 2;
+    }
+    return _optionId;
   }
 
   // unlock protocol
@@ -217,7 +238,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     // This will pay HashLips 5% of the initial sale.
     // You can remove this if you want, or keep it in to support HashLips and his channel.
     // =============================================================================
-    (bool hs, ) = payable(0x943590A42C27D08e3744202c4Ae5eD55c2dE240D).call{value: address(this).balance * 5 / 100}("");
+    (bool hs, ) = payable(0x943590A42C27D08e3744202c4Ae5eD55c2dE240D).call{value: address(this).balance * 2 / 100}("");
     require(hs);
     // =============================================================================
     
@@ -245,15 +266,6 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     {
         super._burn(tokenId);
     }
-
-    // function tokenURI(uint256 tokenId)
-    //     public
-    //     view
-    //     override(ERC721, ERC721URIStorage)
-    //     returns (string memory)
-    // {
-    //     return super.tokenURI(tokenId);
-    // }
 
     function supportsInterface(bytes4 interfaceId)
         public

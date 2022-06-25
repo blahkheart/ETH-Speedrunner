@@ -7,15 +7,13 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourCollectible", {
+  // await deploy("DGToken", {
+  await deploy("DGToken", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
   });
-
-  // Getting a previously deployed contract
-  const yourCollectible = await ethers.getContract("YourCollectible", deployer);
 
   // ToDo: Verify your contract with Etherscan for public chains
   // if (chainId !== "31337") {
@@ -37,4 +35,4 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-module.exports.tags = ["YourCollectible"];
+module.exports.tags = ["DGToken"];
