@@ -23,9 +23,6 @@ contract YourCollectible is
         return "https://ipfs.io/ipfs/";
     }
 
-    _modifier onlyMember() {
-        
-    }
     function mintItem(address to, string memory uri) public returns (uint256) {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
