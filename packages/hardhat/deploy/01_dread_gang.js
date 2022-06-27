@@ -17,7 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     args: [
       "DreadGang NFT",
       "DADA",
-      "",
+      "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/",
       "",
       "0xDc06312e21053dE7ecf7B00E3910f12BcC240BbF",
       dgToken.address
@@ -31,6 +31,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const tx = await dreadGang.transferOwnership(ownerAddress);
   console.log("Transferring ownership to::", ownerAddress);
   console.log("Transfer Completed with txn hash:", tx.hash);
+  
   // ToDo: Verify your contract with Etherscan for public chains
   // if (chainId !== "31337") {
   //   try {

@@ -5,12 +5,12 @@ const { NETWORK } = require(`${basePath}/constants/network.js`);
 const network = NETWORK.eth;
 
 // General metadata for Ethereum
-const namePrefix = "Your Collection";
-const description = "Remember to replace this description";
-const baseUri = "ipfs://NewUriToReplace";
+const namePrefix = "Dread Gang";
+const description = "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang";
+const baseUri = "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe";
 
 const solanaMetadata = {
-  symbol: "YC",
+  symbol: "DREAD",
   seller_fee_basis_points: 1000, // Define how much % you want from secondary market sales 1000 = 10%
   external_url: "https://www.youtube.com/c/hashlipsnft",
   creators: [

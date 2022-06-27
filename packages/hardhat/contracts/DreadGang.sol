@@ -112,6 +112,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
   }
+  
   // function getChainId() public view returns(uint) {
   //   return IUnlockV11(unlockRinkeby).chainId();
   // }

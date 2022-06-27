@@ -137,6 +137,7 @@ const saveMetadata = (_loadedImageObject) => {
   let tempAttributes = [];
   tempAttributes.push(addRarity());
 
+  // image: `${baseUri}/${shortName}.png`,
   let tempMetadata = {
     name: `${namePrefix} #${shortName}`,
     description: description,

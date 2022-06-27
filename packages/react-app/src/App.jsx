@@ -1,3 +1,4 @@
+import { CodeSandboxCircleFilled } from "@ant-design/icons";
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
@@ -258,7 +259,8 @@ function App(props) {
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
-
+  console.log("WRITECONTRACTS::", writeContracts);
+  console.log("READCONTRACTS::", readContracts);
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
@@ -292,7 +294,6 @@ function App(props) {
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
-  console.log("YOUR BALANCE:::", yourBalance);
   const [yourCollectibles, setYourCollectibles] = useState();
 
   useEffect(() => {
@@ -313,7 +314,8 @@ function App(props) {
 
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
+            console.log("jsonManifestTTT:::", jsonManifest);
+
             collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
@@ -780,10 +782,11 @@ function App(props) {
             </div>
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
-                bordered
+                bordered 
                 dataSource={yourCollectibles}
                 renderItem={item => {
-                  const id = item.id.toNumber ();
+                  const id = item.id.toNumber();
+                  console.log("ITEM::", item);
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
@@ -794,7 +797,7 @@ function App(props) {
                         }
                       >
                         <div>
-                          <img src={item.image} style={{ maxWidth: 150 }} />
+                          <img src={item.image} style={{ maxWidth: 250 }} />
                         </div>
                         <div>{item.description}</div>
                       </Card>
