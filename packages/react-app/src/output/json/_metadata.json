@@ -3,9 +3,48 @@
     "name": "Dread Gang #1",
     "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
     "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/1.png",
-    "dna": "a07a9dad7fa467f9841644fe96e551bec34fca68",
+    "dna": "9bbb5b6b181ea759599177d7b0416de3c1c6dddd",
     "edition": 1,
-    "date": 1655830869058,
+    "date": 1656687813689,
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Black"
+      },
+      {
+        "trait_type": "Eyeball",
+        "value": "Red"
+      },
+      {
+        "trait_type": "Eye color",
+        "value": "Yellow"
+      },
+      {
+        "trait_type": "Iris",
+        "value": "Small"
+      },
+      {
+        "trait_type": "Shine",
+        "value": "Shapes"
+      },
+      {
+        "trait_type": "Bottom lid",
+        "value": "Low"
+      },
+      {
+        "trait_type": "Top lid",
+        "value": "Low"
+      }
+    ],
+    "compiler": "HashLips Art Engine"
+  },
+  {
+    "name": "Dread Gang #2",
+    "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
+    "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/2.png",
+    "dna": "0de3c8add53f3a8fd2c6a653dad9f3a646255121",
+    "edition": 2,
+    "date": 1656687813905,
     "attributes": [
       {
         "trait_type": "Background",
@@ -33,18 +72,18 @@
       },
       {
         "trait_type": "Top lid",
-        "value": "Middle"
+        "value": "High"
       }
     ],
     "compiler": "HashLips Art Engine"
   },
   {
-    "name": "Dread Gang #2",
+    "name": "Dread Gang #3",
     "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
-    "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/2.png",
-    "dna": "47514f09ccab9ca79ce5cbe357c57e8d2df29cb7",
-    "edition": 2,
-    "date": 1655830869220,
+    "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/3.png",
+    "dna": "c2709817a623ee9f2205ff09f5e19b9d142ed1c2",
+    "edition": 3,
+    "date": 1656687814152,
     "attributes": [
       {
         "trait_type": "Background",
@@ -56,11 +95,11 @@
       },
       {
         "trait_type": "Eye color",
-        "value": "Purple"
+        "value": "Green"
       },
       {
         "trait_type": "Iris",
-        "value": "Large"
+        "value": "Small"
       },
       {
         "trait_type": "Shine",
@@ -72,18 +111,18 @@
       },
       {
         "trait_type": "Top lid",
-        "value": "Middle"
+        "value": "High"
       }
     ],
     "compiler": "HashLips Art Engine"
   },
   {
-    "name": "Dread Gang #3",
+    "name": "Dread Gang #4",
     "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
-    "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/3.png",
-    "dna": "594219bfa83c650c4811a0db3ad0c2ec03f5bdf2",
-    "edition": 3,
-    "date": 1655830869390,
+    "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/4.png",
+    "dna": "9a90509d2faeda9fe5f19852653a8033442665a0",
+    "edition": 4,
+    "date": 1656687814354,
     "attributes": [
       {
         "trait_type": "Background",
@@ -96,6 +135,45 @@
       {
         "trait_type": "Eye color",
         "value": "Yellow"
+      },
+      {
+        "trait_type": "Iris",
+        "value": "Small"
+      },
+      {
+        "trait_type": "Shine",
+        "value": "Shapes"
+      },
+      {
+        "trait_type": "Bottom lid",
+        "value": "Low"
+      },
+      {
+        "trait_type": "Top lid",
+        "value": "High"
+      }
+    ],
+    "compiler": "HashLips Art Engine"
+  },
+  {
+    "name": "Dread Gang #5",
+    "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
+    "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/5.png",
+    "dna": "cae62f78fabca5e60122454320c9fe02435fb992",
+    "edition": 5,
+    "date": 1656687814559,
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Black"
+      },
+      {
+        "trait_type": "Eyeball",
+        "value": "Red"
+      },
+      {
+        "trait_type": "Eye color",
+        "value": "Red"
       },
       {
         "trait_type": "Iris",
@@ -112,84 +190,6 @@
       {
         "trait_type": "Top lid",
         "value": "Middle"
-      }
-    ],
-    "compiler": "HashLips Art Engine"
-  },
-  {
-    "name": "Dread Gang #4",
-    "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
-    "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/4.png",
-    "dna": "a5b0f61ae3ab735c5f757819c4bd125edf7beddb",
-    "edition": 4,
-    "date": 1655830869558,
-    "attributes": [
-      {
-        "trait_type": "Background",
-        "value": "Black"
-      },
-      {
-        "trait_type": "Eyeball",
-        "value": "Red"
-      },
-      {
-        "trait_type": "Eye color",
-        "value": "Pink"
-      },
-      {
-        "trait_type": "Iris",
-        "value": "Small"
-      },
-      {
-        "trait_type": "Shine",
-        "value": "Shapes"
-      },
-      {
-        "trait_type": "Bottom lid",
-        "value": "Middle"
-      },
-      {
-        "trait_type": "Top lid",
-        "value": "Middle"
-      }
-    ],
-    "compiler": "HashLips Art Engine"
-  },
-  {
-    "name": "Dread Gang #5",
-    "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
-    "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/5.png",
-    "dna": "286d53c27fa6498baf7003aa85a5aab0f72e0264",
-    "edition": 5,
-    "date": 1655830869713,
-    "attributes": [
-      {
-        "trait_type": "Background",
-        "value": "Black"
-      },
-      {
-        "trait_type": "Eyeball",
-        "value": "White"
-      },
-      {
-        "trait_type": "Eye color",
-        "value": "Red"
-      },
-      {
-        "trait_type": "Iris",
-        "value": "Small"
-      },
-      {
-        "trait_type": "Shine",
-        "value": "Shapes"
-      },
-      {
-        "trait_type": "Bottom lid",
-        "value": "Low"
-      },
-      {
-        "trait_type": "Top lid",
-        "value": "Low"
       }
     ],
     "compiler": "HashLips Art Engine"
