@@ -1,7 +1,7 @@
 import { CodeSandboxCircleFilled } from "@ant-design/icons";
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Input, List, Menu, Row, Divider } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -259,8 +259,6 @@ function App(props) {
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
-  console.log("WRITECONTRACTS::", writeContracts);
-  console.log("READCONTRACTS::", readContracts);
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
@@ -314,8 +312,6 @@ function App(props) {
 
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifestTTT:::", jsonManifest);
-
             collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
@@ -529,157 +525,8 @@ function App(props) {
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
 
-  // the json for minting the nfts
+  // the json source for minting the nfts
   const json = metadatajson;
-  // const json = {
-  //   1: {
-  //     description: "The OG Dada G",
-  //     image: "https://ipfs.io/ipfs/bafkreihpbieylklngjykmaz6hcnpsk22lw5ayvaw3mg4vzora43jqry5c4",
-  //     name: "Dada G",
-  //     attributes: [
-  //       {
-  //         trait_type: "BackgroundColor",
-  //         value: "Transparent",
-  //       },
-	//       {
-  //         trait_type: "Hair",
-  //         value: "Dreadlocks",
-  //       },
-  //       {
-  //         trait_type: "Eyes",
-  //         value: "Dots",
-  //       },
-  //       {
-  //         trait_type: "Accessories",
-  //         value: "Blazer",
-  //       },
- 	//       {
-  //         trait_type: "Gadget",
-  //         value: "Phone",
-  //       },
-  //     ],
-  //   },
-  //   7: {
-  //     description: "It's actually a bison?",
-  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  //     image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-  //     name: "Buffalo",
-  //     attributes: [
-  //       {
-  //         trait_type: "BackgroundColor",
-  //         value: "green",
-  //       },
-  //       {
-  //         trait_type: "Eyes",
-  //         value: "googly",
-  //       },
-  //       {
-  //         trait_type: "Stamina",
-  //         value: 42,
-  //       },
-  //     ],
-  //   },
-  //   2: {
-  //     description: "What is it so worried about?",
-  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  //     image: "https://austingriffith.com/images/paintings/zebra.jpg",
-  //     name: "Zebra",
-  //     attributes: [
-  //       {
-  //         trait_type: "BackgroundColor",
-  //         value: "blue",
-  //       },
-  //       {
-  //         trait_type: "Eyes",
-  //         value: "googly",
-  //       },
-  //       {
-  //         trait_type: "Stamina",
-  //         value: 38,
-  //       },
-  //     ],
-  //   },
-  //   3: {
-  //     description: "What a horn!",
-  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  //     image: "https://austingriffith.com/images/paintings/rhino.jpg",
-  //     name: "Rhino",
-  //     attributes: [
-  //       {
-  //         trait_type: "BackgroundColor",
-  //         value: "pink",
-  //       },
-  //       {
-  //         trait_type: "Eyes",
-  //         value: "googly",
-  //       },
-  //       {
-  //         trait_type: "Stamina",
-  //         value: 22,
-  //       },
-  //     ],
-  //   },
-  //   4: {
-  //     description: "Is that an underbyte?",
-  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  //     image: "https://austingriffith.com/images/paintings/fish.jpg",
-  //     name: "Fish",
-  //     attributes: [
-  //       {
-  //         trait_type: "BackgroundColor",
-  //         value: "blue",
-  //       },
-  //       {
-  //         trait_type: "Eyes",
-  //         value: "googly",
-  //       },
-  //       {
-  //         trait_type: "Stamina",
-  //         value: 15,
-  //       },
-  //     ],
-  //   },
-  //   5: {
-  //     description: "So delicate.",
-  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  //     image: "https://austingriffith.com/images/paintings/flamingo.jpg",
-  //     name: "Flamingo",
-  //     attributes: [
-  //       {
-  //         trait_type: "BackgroundColor",
-  //         value: "black",
-  //       },
-  //       {
-  //         trait_type: "Eyes",
-  //         value: "googly",
-  //       },
-  //       {
-  //         trait_type: "Stamina",
-  //         value: 6,
-  //       },
-  //     ],
-  //   },
-  //   6: {
-  //     description: "Raaaar!",
-  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  //     image: "https://austingriffith.com/images/paintings/godzilla.jpg",
-  //     name: "Godzilla",
-  //     attributes: [
-  //       {
-  //         trait_type: "BackgroundColor",
-  //         value: "orange",
-  //       },
-  //       {
-  //         trait_type: "Eyes",
-  //         value: "googly",
-  //       },
-  //       {
-  //         trait_type: "Stamina",
-  //         value: 99,
-  //       },
-  //     ],
-  //   },
-  // };
 
   const mintItem = async () => {
     // upload to ipfs
@@ -708,6 +555,42 @@ function App(props) {
     );
   };
 
+  //DASHBOARD 
+  const [levelLockData, setLevelLockData] = useState({
+    address: "",
+    minTargetLevel: null
+  });
+  const [levelUpData, setLevelUpData] = useState({
+    address: "",
+    tokenId: null
+  });
+  const [isSellAmountApproved, setIsSellAmountApproved] = useState();
+  const [levelingUp, setLevelingUp] = useState();
+  const [nftInView, setNftInView] = useState();
+  const costToLevelUp = 0.005;
+  const { Meta } = Card;
+
+  // Get NFT Data by TokenId
+  const collectibles = _tokenId => {
+    try {
+      let nftData = {};
+      let nftLevel = useContractReader(readContracts, "DreadGang", "getLevel", [address, _tokenId]).toNumber();
+      if (yourCollectibles && yourCollectibles.length) {
+        for (let i = 0; i < yourCollectibles.length; i++) {
+          let id = yourCollectibles[i].id.toNumber();
+          if (id == _tokenId) {
+            nftData = { ...yourCollectibles[i], nftLevel };
+          }
+        }
+      }
+      console.log("NFT DATA:::", nftData);
+      return nftData;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  collectibles(1);
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -723,6 +606,16 @@ function App(props) {
               to="/"
             >
               YourCollectibles
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/dashboard">
+            <Link
+              onClick={() => {
+                setRoute("/dashboard");
+              }}
+              to="/dashboard"
+            >
+              Dashboard
             </Link>
           </Menu.Item>
           <Menu.Item key="/transfers">
@@ -768,7 +661,7 @@ function App(props) {
         </Menu>
         <Switch>
           <Route exact path="/">
-            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+            <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <Button
                 disabled={minting}
                 shape="round"
@@ -780,13 +673,12 @@ function App(props) {
                 MINT NFT
               </Button>
             </div>
-            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+            <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
                 bordered 
                 dataSource={yourCollectibles}
                 renderItem={item => {
                   const id = item.id.toNumber();
-                  console.log("ITEM::", item);
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
@@ -833,6 +725,166 @@ function App(props) {
                   );
                 }}
               />
+            </div>
+          </Route>
+
+           <Route path="/dashboard">
+            <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <div style={{ padding: 8, marginTop: 32, width: 450, margin: "auto" }}>
+                <Card title="Street Cred">
+                  <div style={{ padding: 8, display: "flex" }}>
+                    <Input
+                      style={{ textAlign: "center", marginBottom: 15 }}
+                      placeholder={"Enter token Id"}
+                      type="number"
+                      value={""}
+                      onChange={e => {
+                        const newValue = e.target.value;
+                        console.log("NEW VALUE", newValue);
+                        // getNftData(newValue);
+                      }}
+                    />
+                    <Button
+                      type={"danger"}
+                      loading={false}
+                      onClick={() => {
+                        // setBuying(true);
+                        // await tx(writeContracts.Vendor.buyTokens({ value: ethCostToPurchaseTokens }));
+                        // setBuying(false);
+                      }}
+                      disabled={false}
+                    >
+                      Load
+                    </Button>
+                  </div>
+                  <div style={{ padding: 8, display: "flex", justifyContent: "center" }}>
+                    <Card
+                      hoverable
+                      style={{
+                        width: 240,
+                      }}
+                      cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
+                    >
+                      <Meta title="DreadGang #1" description="Level: 2" />
+                    </Card>
+                  </div>
+                </Card>
+              </div>
+              <Divider />
+              <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
+                <Card title="Create level">
+                  <div style={{ padding: 8 }}>
+                    <Input
+                      style={{ textAlign: "center", marginBottom: 15 }}
+                      placeholder={"Lock address"}
+                      value={""}
+                      onChange={e => {
+                        const newValue = e.target.value.startsWith(".") ? "0." : e.target.value;
+                        const buyAmount = {
+                          value: newValue,
+                          valid: /^\d*\.?\d+$/.test(newValue)
+                        }
+                        // setlevelLockAddress(buyAmount);
+                      }}
+                    />
+                    <Input
+                      style={{ textAlign: "center" }}
+                      placeholder={"Minimum target level"}
+                      value={""}
+                      onChange={e => {
+                        const newValue = e.target.value.startsWith(".") ? "0." : e.target.value;
+                        const buyAmount = {
+                          value: newValue,
+                          valid: /^\d*\.?\d+$/.test(newValue)
+                        }
+                        // setTokenBuyAmount(buyAmount);
+                      }}
+                    />
+                  </div>
+                  <div style={{ padding: 8 }}>
+                    <Button
+                      type={"danger"}
+                      loading={false}
+                      onClick={async () => {
+                        // setBuying(true);
+                        // await tx(writeContracts.Vendor.buyTokens({ value: ethCostToPurchaseTokens }));
+                        // setBuying(false);
+                      }}
+                      disabled={false}
+                    >
+                      Create New Level
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+              <Divider />
+              <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
+                <Card title="Level Up">
+                  {/* <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div> */}
+                    
+                    <div style={{ padding: 8 }}>
+              
+                        <Input
+                          style={{ textAlign: "center", marginBottom: 15 }}
+                          placeholder={"Level lock address"}
+                          value={levelUpData.address}
+                          onChange={e => {
+                            const newValue = e.target.value;
+                            const levelUpData = {
+                              address: newValue
+                              // tokenId: levelUpData.tokenId
+                            }
+                            console.log("lv1", levelUpData);
+                            setLevelUpData(levelUpData);
+                          }}
+                        />
+                        <Input
+                          style={{ textAlign: "center" }}
+                          placeholder={"Token Id"}
+                          value={levelUpData.tokenId}
+                          onChange={e => {
+                            const newValue = e.target.value;
+                            const levelUpData = {
+                              // address: levelUpData.address,
+                              minTargetLevel: newValue
+                            }
+                            console.log("lv2", levelUpData);
+                            setLevelUpData(levelUpData);
+                          }}
+                        />
+                      </div>
+                    
+
+                  <div style={{ padding: 8 }}>
+                    <Button
+                      type={"primary"}
+                      loading={levelingUp}
+                      onClick={async () => {
+                        setLevelingUp(true);
+                        // await tx(writeContracts.DreadGang.levelUp(levelUpData.address, levelUpData.tokenId { value: costToLevelUp }));
+                        await tx(writeContracts.DreadGang.levelUp(levelUpData.address, levelUpData.tokenId, { value: costToLevelUp }));
+                        setLevelingUp(false);
+                      }}
+                      disabled={false}
+                    >
+                      Level Up
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+              {/* <List
+                bordered
+                dataSource={transferEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item.args[2].toNumber()}>
+                      <span style={{ fontSize: 16, marginRight: 8 }}>#{item.args[2].toNumber()}</span>
+                      <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
+                      <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
+                    </List.Item>
+                  );
+                }}
+              /> */}
             </div>
           </Route>
 
