@@ -25,6 +25,7 @@ import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Dashboard } from "./views";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
@@ -566,12 +567,12 @@ function App(props) {
   });
   const [isSellAmountApproved, setIsSellAmountApproved] = useState();
   const [levelingUp, setLevelingUp] = useState();
-  const [nftInView, setNftInView] = useState();
+  const [nftInView, setNftInView] = useState({});
   const costToLevelUp = 0.005;
   const { Meta } = Card;
 
   // Get NFT Data by TokenId
-  const collectibles = _tokenId => {
+  const getNFTData = _tokenId => {
     try {
       let nftData = {};
       let nftLevel = useContractReader(readContracts, "DreadGang", "getLevel", [address, _tokenId]).toNumber();
@@ -589,7 +590,31 @@ function App(props) {
       console.log(e);
     }
   };
-  collectibles(1);
+  // getNFTData(1);
+
+  // useEffect(() => {
+  //   const viewCollectible = async () => {
+  //     try {
+  //       let nftData = {};
+  //       let nftLevel = useContractReader(readContracts, "DreadGang", "getLevel", [address, _tokenId]).toNumber();
+  //       if (yourCollectibles && yourCollectibles.length) {
+  //         for (let i = 0; i < yourCollectibles.length; i++) {
+  //           let id = yourCollectibles[i].id.toNumber();
+  //           if (id == _tokenId) {
+  //             nftData = { ...yourCollectibles[i], nftLevel };
+  //           }
+  //         }
+  //       }
+  //       console.log("NFT DATA:::", nftData);
+  //       return nftData;
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //     // setNftInView(collectibleUpdate);
+  //   };
+  //   viewCollectible();
+  // }, [address, yourCollectibles]);
+
 
   return (
     <div className="App">
@@ -688,20 +713,22 @@ function App(props) {
                           </div>
                         }
                       >
-                        <div>
+                        <div style={{ marginBottom: 25 }}>
                           <img src={item.image} style={{ maxWidth: 250 }} />
                         </div>
-                        <div>{item.description}</div>
+                        <div >{item.description}</div>
                       </Card>
 
                       <div>
-                        owner:{" "}
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
+                        <div style={{ marginBottom: 15 }}>
+                          owner:{" "}
+                          <Address
+                            address={item.owner}
+                            ensProvider={mainnetProvider}
+                            blockExplorer={blockExplorer}
+                            fontSize={16}
+                          />
+                        </div>
                         <AddressInput
                           ensProvider={mainnetProvider}
                           placeholder="transfer to address"
@@ -712,6 +739,7 @@ function App(props) {
                             setTransferToAddresses({ ...transferToAddresses, ...update });
                           }}
                         />
+                        <br/>
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
@@ -728,9 +756,17 @@ function App(props) {
             </div>
           </Route>
 
-           <Route path="/dashboard">
+          <Route path="/dashboard">
             <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <div style={{ padding: 8, marginTop: 32, width: 450, margin: "auto" }}>
+              <Dashboard
+                yourCollectibles={yourCollectibles}
+                address={address}
+                mainnetProvider={mainnetProvider}
+                tx={tx}
+                readContracts={readContracts}
+                writeContracts={writeContracts}
+              />
+              {/* <div style={{ padding: 8, marginTop: 32, width: 450, margin: "auto" }}>
                 <Card title="Street Cred">
                   <div style={{ padding: 8, display: "flex" }}>
                     <Input
@@ -741,7 +777,8 @@ function App(props) {
                       onChange={e => {
                         const newValue = e.target.value;
                         console.log("NEW VALUE", newValue);
-                        // getNftData(newValue);
+                        const nftData = getNFTData(newValue);
+                        setNftInView(nftData);
                       }}
                     />
                     <Button
@@ -763,7 +800,7 @@ function App(props) {
                       style={{
                         width: 240,
                       }}
-                      cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
+                      cover={<img alt="example" src={nftInView ? nftInView.image : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"} />}
                     >
                       <Meta title="DreadGang #1" description="Level: 2" />
                     </Card>
@@ -820,8 +857,6 @@ function App(props) {
               <Divider />
               <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
                 <Card title="Level Up">
-                  {/* <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div> */}
-                    
                     <div style={{ padding: 8 }}>
               
                         <Input
@@ -852,7 +887,7 @@ function App(props) {
                             setLevelUpData(levelUpData);
                           }}
                         />
-                      </div>
+                    </div>
                     
 
                   <div style={{ padding: 8 }}>
@@ -871,20 +906,7 @@ function App(props) {
                     </Button>
                   </div>
                 </Card>
-              </div>
-              {/* <List
-                bordered
-                dataSource={transferEvents}
-                renderItem={item => {
-                  return (
-                    <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item.args[2].toNumber()}>
-                      <span style={{ fontSize: 16, marginRight: 8 }}>#{item.args[2].toNumber()}</span>
-                      <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
-                      <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
-                    </List.Item>
-                  );
-                }}
-              /> */}
+              </div> */}
             </div>
           </Route>
 
