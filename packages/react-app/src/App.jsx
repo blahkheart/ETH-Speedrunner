@@ -2,7 +2,6 @@ import { CodeSandboxCircleFilled } from "@ant-design/icons";
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
-import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
   useBalance,
@@ -38,6 +37,9 @@ const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
 const { ethers } = require("ethers");
+// unlock contract abis
+import { CreateLock } from "./components";
+const abis = require("@unlock-protocol/contracts");
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -193,6 +195,9 @@ const web3Modal = new Web3Modal({
   },
 });
 
+//DASHBOARD
+
+
 function App(props) {
   const mainnetProvider =
     poktMainnetProvider && poktMainnetProvider._isProvider
@@ -278,7 +283,8 @@ function App(props) {
 
   // DreadGang Contract Address
   const dreadGangAddress = readContracts && readContracts.DreadGang && readContracts.DreadGang.address;
-
+  const tokenOfAccount = useContractReader(readContracts, "DreadGang", "walletOfOwner", [address]);
+  console.log("TOKEN OF WALLET", tokenOfAccount);
   // DGToken Address
   const dgTokenAddress = readContracts && readContracts.DGToken && readContracts.DGToken.address;
 
@@ -289,6 +295,8 @@ function App(props) {
   // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "DreadGang", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
+
+
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -708,6 +716,88 @@ function App(props) {
     );
   };
 
+  ////////////////Unlock Protocol///////////////////
+  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState();
+  const [publicLockAddress, setPublicLockAddress] = useState();
+  const [publicLock, setPublicLock] = useState();
+  const [unlock, setUnlock] = useState();
+  const [isMember, setIsMember] = useState();
+  const [lockName, setLockName] = useState();
+
+ 
+
+  useEffect(() => {
+    const readyUnlock = async () => {
+      try {
+        if (deployedUnlockAddress) {
+          const _unlock = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner);
+          setUnlock(_unlock);
+          console.log("UNLOCK", unlock);
+        }
+        if (publicLockAddress) {
+          const _publicLock = new ethers.Contract(publicLockAddress, abis.PublicLockV8.abi, userSigner);
+          setPublicLock(_publicLock);
+          console.log("PUBLIC UNLOCK NAME", await publicLock.name());
+          console.log("PUBLIC UNLOCK SYMBOL", await publicLock.symbol());
+          console.log("PUBLICUNLOCK", publicLock);
+        }
+      } catch (e) {
+        console.log("ERROR SETTING UNLOCK VARIABLES::", e);
+      }
+    };
+    readyUnlock();
+  }, [deployedUnlockAddress, publicLockAddress]);
+
+  const handleNewLock = (lockOwner, newLockAddress) => {
+    console.log({ lockOwner, newLockAddress });
+  }
+
+  useEffect(() => {
+    const eventHandler = async () => {
+      if (unlock) {
+        await unlock.on("NewLock", handleNewLock);
+  
+      
+        return () => {
+          unlock.removeAllListeners("NewLock");
+        };
+      }
+    }
+    eventHandler();
+  },[])
+   // 📟 Listen for createLock events
+  // const createLockEvents = useEventListener(readContracts, unlock, "NewLock", localProvider, 1);
+  // console.log("📟 NEW LOCK events:", createLockEvents);
+  
+  // const checkUser = async () => {
+  //   if (publicLock) {
+  //     const validMember = await publicLock.balanceOf(address > 0);
+  //     validMember === true ? setIsMember(true) : setIsMember(false);
+  //     validMember ? console.log("MEMBER") : console.log("NON MEMBER");
+  //   }
+  // };
+  // checkUser();
+
+//   const run = async () => {
+//     const address = "0x8E93188aA4156F7B735AB357EEC2cCaf3494a5a7";
+//     // const lockRinkebyAddr = "0xd8c88be5e8eb88e38e6ff5ce186d764676012b0b";
+
+//     const lock = new ethers.Contract(address, abis.PublicLockV8.abi, localProvider);
+//     const unlock = new ethers.Contract(deployedUnlockAddress, abis.UnlockV10.abi, localProvider);
+
+//     // After that we can read the state of the lock, using methods from its ABI:
+//       console.log(await lock.symbol()); // => "KEY"
+//       console.log(await unlock.locks(address)); // => "KEY"
+      
+//     console.log(await lock.name()); // => "Test Oct 20"
+//     console.log((await lock.publicLockVersion()).toString());
+//   };
+// run();
+
+
+  //////////////END OF UNLOCK PROTOCOL/////////////
+
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -722,8 +812,18 @@ function App(props) {
               }}
               to="/"
             >
-              YourCollectibles
+              Your Collectibles
             </Link>
+          </Menu.Item>
+          <Menu.Item key="/dashboard">
+            <Link
+              onClick={() => {
+                setRoute("/dashboard");
+              }}
+              to="/dashboard"
+            >
+              Dashboard
+          </Link>
           </Menu.Item>
           <Menu.Item key="/transfers">
             <Link
@@ -836,6 +936,49 @@ function App(props) {
             </div>
           </Route>
 
+          <Route path="/dashboard">
+            <div style={{ maxWidth: 1200, margin: "auto", marginTop: 32, paddingBottom: 32, paddingTop: 0 }}>
+              <h3>DASHBOARD</h3> 
+              <Card
+                style={{
+                  width: "100%",
+                  marginBottom: 20,
+                }}
+              >
+                <div>
+                  <img src="" alt="IMG" />
+                  <Input
+                    value={deployedUnlockAddress}
+                    placeholder="Enter deployed unlock address"
+                    onChange={e => {
+                      setDeployedUnlockAddress(e.target.value);
+                    }}
+                  />
+                  <Input
+                    value={publicLockAddress}
+                    placeholder="Enter lock address"
+                    onChange={e => {
+                      setPublicLockAddress(e.target.value);
+                    }}
+                  />
+                </div>
+                <p>level: 75</p>
+                <p>{lockName}</p>
+                <p>location: Decentraland</p>
+                <button>create levelUp</button>
+                <button>level Up</button>
+              </Card>
+
+              <CreateLock
+                price={price}
+                unlock={unlock}
+                localProvider={localProvider}
+                targetNetwork={targetNetwork}
+                userSigner={userSigner}
+              />
+            </div>
+          </Route>
+
           <Route path="/transfers">
             <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
@@ -931,6 +1074,14 @@ function App(props) {
           <Route path="/debugcontracts">
             <Contract
               name="DreadGang"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="DGToken"
               signer={userSigner}
               provider={localProvider}
               address={address}
