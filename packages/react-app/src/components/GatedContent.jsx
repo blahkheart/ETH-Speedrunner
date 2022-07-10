@@ -1,189 +1,189 @@
 import { Button, Card, Col, Input, Row, DatePicker, Select, Space, TimePicker } from "antd";
-import { EtherInput } from "./";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-const ethers = require("ethers");
-// const { Web3Service } = require("@unlock-protocol/unlock-js");
+import ContentPaywall from "./ContentPaywall";
+// const ethers = require("ethers");
+// import { Paywall } from '@unlock-protocol/paywall';
 
-// const wallet = new ethers.Wallet.fromMnemonic(
-//   "solid entry walnut extend aisle skirt myth clog need analyst edit bench"
-// ).connect(provider);
-// async function run() {
-//   const walletService = new WalletService(networks);
-
-//   // Connect to a provider with a wallet
-//   await walletService.connect(provider, wallet);
-
-//   // This only resolves when the transaction has been mined, but the callback returns the hash immediately
-//   await walletService.createLock(
-//     {
-//       maxNumberOfKeys: 100,
-//       name: "testing silver",
-//       expirationDuration: 12121311,
-//       keyPrice: "0.01", // Key price needs to be a string
-//     },
-//     (error, hash) => {
-//       // This is the hash of the transaction!
-//       console.log({ hash });
-//     }
-//   );
-// }
-// run();
 
 /*
-  ~ TODO ::: What it does? ~
-  Displays an UI to deploy a lock using unlock protocol
+  ~ What it does? ~
+  Displays a UI that reveals content based on whether a user is a member or not.
   ~ How can I use? ~
-  <CreateLock
-    autoFocus
-    ensProvider={mainnetProvider}
-    placeholder="Enter address"
-    value={toAddress}
-    onChange={setToAddress}
+  <GatedContent
+    address={address}
+    publicLock={publicLock}
+    targetNetwork={targetNetwork}
   />
-  ~ TODO::: Features ~
-  - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
-              (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
-  - Provide placeholder="Enter address" value for the input
-  - Value of the address input is stored in value={toAddress}
-  - Control input change by onChange={setToAddress}
-                          or onChange={address => { setToAddress(address);}}
+
+  ~ Features ~
+  - address={address} passes active user's address to the component to check whether they are members or not
+  - publicLock={publicLock} passes the specific lock to check for the user's membership
+  - targetNetwork={targetNetwork} passes the current app network to the <ContentPaywall /> to determine the network to connect to
 */
 
 
-const CreateLock = ({ price, unlock }) => {
+const GatedContent = ({ publicLock, address, targetNetwork }) => {
   const routeHistory = useHistory();
   const [isLoading, setIsLoading] = useState(false);
-  const [expirationDuration, setExpirationDuration] = useState({});
-  const [tokenAddress, setTokenAddress] = useState();
-  const [keyPrice, setKeyPrice] = useState();
-  const [maxNumberOfKeys, setMaxNumberOfKeys] = useState();
-  const [lockName, setLockName] = useState();
-  const [lockTxHash, setLockTxHash] = useState();
-  const [newLockAddress, setNewLockAddress] = useState();
-
-
+    const [hasValidKey, setHasValidKey] = useState(false);
+    //
+    // const [lockName, setLockName] = useState();
     
-//     ```solidity
-// function createLock(
-    // uint256 _expirationDuration,
-    // address _tokenAddress,
-    // uint256 _keyPrice,
-    // uint256 _maxNumberOfKeys,
-    // string _lockName,
-    // bytes12
-    // ) external nonpayable returns(address)
 
+    //Check if user has valid key to specified lock
+    //If true, display Gatedcontent
+    //If false, display previewContent and display paywall
 
+    // const paywallConfig = {
+    //     "network": 4,
+    //     "pessimistic": true,
+    //     "locks": {
+    //         "0x5C31a498C3811B67A0c5bd23Ca5be091e2a93eD9": {
+    //           "network": 4,
+    //           "name": "test"
+    //         },
+    //         "0x272c91225b590C32C9416e861547dF7D476Fa235": {
+    //           "network": 4,
+    //           "name": "DreadGang Presale Whitelist"
+    //         }
+    //     },
+    //     "icon": "https://unlock-protocol.com/static/images/svg/unlock-word-mark.svg",
+    //     "callToAction": {
+    //         "default": "Please join the DG membership!"
+    //     },
+    //     "referrer": "0xCA7632327567796e51920F6b16373e92c7823854",
+    //     "persistentCheckout": false,
+    //     "metadataInputs": [
+    //         {
+    //             "name": "Name",
+    //             "type": "text",
+    //             "required": true
+    //         }
+    //     ]
+    // };
+    // useEffect(() => {
+    //     const readyLockData = async () => {
+    //         if (publicLock) {
+    //             const lockName = await publicLock.name();
+    //             setLockName(lockName);
+    //        }    
+    //     } 
+    //     readyLockData();
+    // }, [publicLock])
 
-  const createLock = (
+    // const paywallConfig = {
+    //     "network": targetNetwork.chainId,
+    //     "pessimistic": true,
+    //     "locks": {
+    //         "0x5C31a498C3811B67A0c5bd23Ca5be091e2a93eD9": {
+    //           "network": targetNetwork.chainId,
+    //           "name": lockName
+    //         },
+    //         "0x272c91225b590C32C9416e861547dF7D476Fa235": {
+    //           "network": 4,
+    //           "name": "DreadGang Presale Whitelist"
+    //         }
+    //     },
+    //     "icon": "https://unlock-protocol.com/static/images/svg/unlock-word-mark.svg",
+    //     "callToAction": {
+    //         "default": "Please join the DG membership!"
+    //     },
+    //     "referrer": "0xCA7632327567796e51920F6b16373e92c7823854",
+    //     "persistentCheckout": false,
+    //     "metadataInputs": [
+    //         {
+    //             "name": "Name",
+    //             "type": "text",
+    //             "required": true
+    //         }
+    //     ]
+    // };
+
+// Configure networks to use
+    // const networkConfigs = {
+    //     1: {
+    //         readOnlyProvider: 'HTTP PROVIDER',
+    //         locksmithUri: 'https://locksmith.unlock-protocol.com',
+    //         unlockAppUrl: 'https://app.unlock-protocol.com'
+    //     },
+    //     100: {
+    //         readOnlyProvider: 'HTTP PROVIDER',
+    //         locksmithUri: 'https://locksmith.unlock-protocol.com',
+    //         unlockAppUrl: 'https://app.unlock-protocol.com'
+    //     },
+    //     4: {
+    //         readOnlyProvider: targetNetwork.rpcUrl,
+    //         locksmithUri: 'https://locksmith.unlock-protocol.com',
+    //         unlockAppUrl: 'https://app.unlock-protocol.com'
+    //     }
+    // etc
+    // }
+
+    // const paywall = new Paywall(paywallConfig, networkConfigs);
+    
+    // console.log("PAYWALL", paywall);
+    
+    
+  useEffect(() => {
+    const isMember = async () => {
+      if (publicLock) {
+        const hasKey = await publicLock.getHasValidKey(address);
+        setHasValidKey(hasKey);
+      }
+    }
+    isMember();
+  }, [address, publicLock]);
+
+  const previewContent = (
     <>
-        <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
-            <Card title="Deploy new lock">
-                <div style={{ padding: 8 }}>
-                    <Input
-                      style={{ textAlign: "left", marginBottom: 15 }}
-                      placeholder={"Lock name"}
-                      value={lockName}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setLockName(newValue);
-                      }}
-                    />
-                    <Input
-                      style={{ textAlign: "left", marginBottom: 15 }}
-                      placeholder={"Token address"}
-                      value={tokenAddress}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setTokenAddress(newValue);
-                      }}
-                    />
-                    <Input
-                      style={{ textAlign: "left", marginBottom: 15 }}
-                      placeholder={"Max number of keys"}
-                      value={maxNumberOfKeys}
-                      onChange={e => {
-                          const newValue = parseInt(e.target.value);
-                          console.log("Max key ",newValue);
-                        setMaxNumberOfKeys(newValue);
-                      }}
-                    />
-                    <EtherInput
-                      autofocus
-                      price={price}
-                      value={keyPrice}
-                      placeholder="Enter key price"
-                        onChange={value => {
-                            const newValue = ethers.utils.parseEther(value);
-                        setKeyPrice(newValue);
-                      }}
-                    />
-                    {/* <Input
-                      style={{ textAlign: "left" }}
-                      placeholder={"Expiration duration"}
-                      value={expirationDuration}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setExpirationDuration(newValue);
-                          }}
-                          
-                      /> */}
-                      <div style={{ textAlign: "left", marginTop: 15 }}>
-                          <input type="date" onChange={e => {
-                            const newValue = e.target.value;
-                            const timeStamp = new Date(newValue).getTime();
-                            setExpirationDuration(timeStamp);
-                          }} />
-                      </div>
-                </div>
-                <div style={{ padding: 8 }}>
-                  <Button
-                    type={"danger"}
-                    loading={isLoading}
-                    onClick={async () => {
-                      setIsLoading(true);
-                      try {
-                          const result = await unlock.createLock(
-                              expirationDuration,
-                              tokenAddress,
-                              keyPrice,
-                              maxNumberOfKeys,
-                              lockName,
-                              '0x000000000000000000000000' //SALT
-                          );
-                          const tx = await result.wait();
-                          const event = tx.events;
-                          const newLockAddress = event[6].args[1];
-                          setLockTxHash(result.hash);
-                          setNewLockAddress(newLockAddress);
-                      } catch (e) {
-                        console.log(e);
-                      }
-                      setTimeout(setIsLoading(false), 3000);
-                    }}
-                    disabled={isLoading}
-                >
-                    Create Lock
-                  </Button>
-                </div>
-                <div style={{ textAlign: "left" }}>
-                  {lockTxHash ? <p>Transaction Hash: {lockTxHash}</p> : ""}
-                  {lockTxHash && newLockAddress ? <p>New Lock Address: {newLockAddress}</p> : ""}
-                </div>
-            </Card>
-        </div>
+      <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
+        <Card title="Preview Content">
+          <div style={{ padding: 8 }}>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+            In consectetur molestiae est perferendis voluptas suscipit
+            neque quis facilis officia esse?
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Velit omnis reprehenderit illum voluptatibus fuga sint tenetur
+            debitis nisi quos. Placeat quos alias harum accusantium soluta,
+            fugiat error nemo, illo dicta illum labore hic aliquid aspernatur?
+            <ContentPaywall
+              shape={"round"}
+              size={"large"}
+              displayText={"Become a member to view full content"}
+              targetNetwork={targetNetwork}
+              publicLock={publicLock}
+            />
+          </div>
+        </Card>
+      </div>
     </>
   );
-    
+
+  const gatedContent = (
+    <>
+      <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
+          <Card title="Gated Content">
+            <div style={{ padding: 8 }}>
+              YOU NOW HAVE ACCESS TO THE GATED CONTENT
+            </div>
+          </Card>
+      </div>
+    </>
+  );
 
   return (
     <>
       <Row>
-        <Col span={24}> {createLock} </Col>
+        <Col span={24}>
+          { hasValidKey && hasValidKey !== false
+            ? gatedContent
+            : previewContent
+          }
+        </Col>
       </Row>
     </>
   );
 };
 
-export default CreateLock;
+export default GatedContent;

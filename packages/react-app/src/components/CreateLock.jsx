@@ -3,32 +3,6 @@ import { EtherInput } from "./";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 const ethers = require("ethers");
-// const { Web3Service } = require("@unlock-protocol/unlock-js");
-
-// const wallet = new ethers.Wallet.fromMnemonic(
-//   "solid entry walnut extend aisle skirt myth clog need analyst edit bench"
-// ).connect(provider);
-// async function run() {
-//   const walletService = new WalletService(networks);
-
-//   // Connect to a provider with a wallet
-//   await walletService.connect(provider, wallet);
-
-//   // This only resolves when the transaction has been mined, but the callback returns the hash immediately
-//   await walletService.createLock(
-//     {
-//       maxNumberOfKeys: 100,
-//       name: "testing silver",
-//       expirationDuration: 12121311,
-//       keyPrice: "0.01", // Key price needs to be a string
-//     },
-//     (error, hash) => {
-//       // This is the hash of the transaction!
-//       console.log({ hash });
-//     }
-//   );
-// }
-// run();
 
 /*
   ~ TODO ::: What it does? ~
@@ -78,104 +52,106 @@ const CreateLock = ({ price, unlock }) => {
 
   const createLock = (
     <>
-        <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
-            <Card title="Deploy new lock">
-                <div style={{ padding: 8 }}>
-                    <Input
-                      style={{ textAlign: "left", marginBottom: 15 }}
-                      placeholder={"Lock name"}
-                      value={lockName}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setLockName(newValue);
-                      }}
-                    />
-                    <Input
-                      style={{ textAlign: "left", marginBottom: 15 }}
-                      placeholder={"Token address"}
-                      value={tokenAddress}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setTokenAddress(newValue);
-                      }}
-                    />
-                    <Input
-                      style={{ textAlign: "left", marginBottom: 15 }}
-                      placeholder={"Max number of keys"}
-                      value={maxNumberOfKeys}
-                      onChange={e => {
-                          const newValue = parseInt(e.target.value);
-                          console.log("Max key ",newValue);
-                        setMaxNumberOfKeys(newValue);
-                      }}
-                    />
-                    <EtherInput
-                      autofocus
-                      price={price}
-                      value={keyPrice}
-                      placeholder="Enter key price"
-                        onChange={value => {
-                            const newValue = ethers.utils.parseEther(value);
-                        setKeyPrice(newValue);
-                      }}
-                    />
-                    {/* <Input
-                      style={{ textAlign: "left" }}
-                      placeholder={"Expiration duration"}
-                      value={expirationDuration}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setExpirationDuration(newValue);
-                          }}
-                          
-                      /> */}
-                      <div style={{ textAlign: "left", marginTop: 15 }}>
-                          <input type="date" onChange={e => {
-                            const newValue = e.target.value;
-                            const timeStamp = new Date(newValue).getTime();
-                            setExpirationDuration(timeStamp);
-                          }} />
-                      </div>
-                </div>
-                <div style={{ padding: 8 }}>
-                  <Button
-                    type={"danger"}
-                    loading={isLoading}
-                    onClick={async () => {
-                      setIsLoading(true);
-                      try {
-                          const result = await unlock.createLock(
-                              expirationDuration,
-                              tokenAddress,
-                              keyPrice,
-                              maxNumberOfKeys,
-                              lockName,
-                              '0x000000000000000000000000' //SALT
-                          );
-                          const tx = await result.wait();
-                          const event = tx.events;
-                          const newLockAddress = event[6].args[1];
-                          setLockTxHash(result.hash);
-                          setNewLockAddress(newLockAddress);
-                      } catch (e) {
-                        console.log(e);
-                      }
-                      setTimeout(setIsLoading(false), 3000);
-                    }}
-                    disabled={isLoading}
-                >
-                    Create Lock
-                  </Button>
-                </div>
-                <div style={{ textAlign: "left" }}>
-                  {lockTxHash ? <p>Transaction Hash: {lockTxHash}</p> : ""}
-                  {lockTxHash && newLockAddress ? <p>New Lock Address: {newLockAddress}</p> : ""}
-                </div>
-            </Card>
-        </div>
+      <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
+        <Card title="Deploy new lock">
+          <div style={{ padding: 8 }}>
+            <Input
+              style={{ textAlign: "left", marginBottom: 15 }}
+              placeholder={"Lock name"}
+              value={lockName}
+              onChange={e => {
+                const newValue = e.target.value;
+                setLockName(newValue);
+              }}
+            />
+            <Input
+              style={{ textAlign: "left", marginBottom: 15 }}
+              placeholder={"Token address"}
+              value={tokenAddress}
+              onChange={e => {
+                const newValue = e.target.value;
+                setTokenAddress(newValue);
+              }}
+            />
+            <Input
+              style={{ textAlign: "left", marginBottom: 15 }}
+              placeholder={"Max number of keys"}
+              value={maxNumberOfKeys}
+              onChange={e => {
+                const newValue = parseInt(e.target.value);
+                console.log("Max key ", newValue);
+                setMaxNumberOfKeys(newValue);
+              }}
+            />
+            <EtherInput
+              autofocus
+              price={price}
+              value={keyPrice}
+              placeholder="Enter key price"
+              onChange={value => {
+                const newValue = ethers.utils.parseEther(value);
+                setKeyPrice(newValue);
+              }}
+            />
+            {/* <Input
+              style={{ textAlign: "left" }}
+              placeholder={"Expiration duration"}
+              value={expirationDuration}
+              onChange={e => {
+                const newValue = e.target.value;
+                setExpirationDuration(newValue);
+                  }}
+                  
+              /> */}
+            <div style={{ textAlign: "left", marginTop: 15 }}>
+              <input
+                type="date"
+                onChange={e => {
+                  const newValue = e.target.value;
+                  const timeStamp = new Date(newValue).getTime();
+                  setExpirationDuration(timeStamp);
+                }}
+              />
+            </div>
+          </div>
+          <div style={{ padding: 8 }}>
+            <Button
+              type={"danger"}
+              loading={isLoading}
+              onClick={async () => {
+                setIsLoading(true);
+                try {
+                    const result = await unlock.createLock(
+                        expirationDuration,
+                        tokenAddress,
+                        keyPrice,
+                        maxNumberOfKeys,
+                        lockName,
+                        '0x000000000000000000000000' //SALT
+                    );
+                    const tx = await result.wait();
+                    const event = tx.events;
+                    const newLockAddress = event[6].args[1];
+                    setLockTxHash(result.hash);
+                    setNewLockAddress(newLockAddress);
+                } catch (e) {
+                  console.log(e);
+                }
+                setTimeout(setIsLoading(false), 3000);
+              }}
+              disabled={isLoading}
+          >
+              Create Lock
+            </Button>
+          </div>
+          <div style={{ textAlign: "left" }}>
+            {lockTxHash ? <p>Transaction Hash: {lockTxHash}</p> : ""}
+            {lockTxHash && newLockAddress ? <p>New Lock Address: {newLockAddress}</p> : ""}
+          </div>
+        </Card>
+      </div>
     </>
   );
-    
 
   return (
     <>

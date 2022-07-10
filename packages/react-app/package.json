@@ -26,6 +26,7 @@
     "@uniswap/sdk": "^3.0.3",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@unlock-protocol/contracts": "^0.0.5",
+    "@unlock-protocol/paywall": "^0.1.0",
     "@unlock-protocol/unlock-js": "^0.23.1",
     "@walletconnect/web3-provider": "^1.5.2",
     "antd": "4.16.0",

@@ -17,22 +17,25 @@ import "./DGToken.sol";
  * Creature - a contract for my non-fungible creatures.
  */
 contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
+
   using Strings for uint256;
   using Counters for Counters.Counter;
 
   string baseURI;
   string public baseExtension = ".json";
-  uint256 public cost = 0.05 ether;
+  uint256 public cost = 0.005 ether;
+  uint256 public gatePassNoob = 0.01 ether;
+  uint256 public gatePassHustler = 0.05 ether;
+  uint256 public gatePassOG = 0.1 ether;
   uint256 public maxSupply = 10000;
-  uint256 public maxMintAmount = 20;
+  uint256 public maxMintAmount = 6;
   bool public paused = false;
   bool public revealed = false;
   string public notRevealedUri;
   uint256 _optionId;
   Counters.Counter private _tokenIdCounter;
+  uint256 dues = 100;
 
-  address public unlockRinkeby = 0xD8C88BE5e8EB88E38E6ff5cE186d764676012B0b;
-  address public publicLockRinkeby = 0xa55F8Ba16C5Bb580967f7dD94f927B21d0acF86c;
   IPublicLock public publicLock;
   IUnlockV11 public unlock;
   bool public isPublicLockAddressSet = false; // tracks whether a lock address has been set.
@@ -40,8 +43,19 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
   IPublicLock public multiMintLock;
   bool isMultiMintLockAddressSet = false;
 
+  struct LevelUnlockData {
+    address lockAddress;
+    bool init;
+    uint minTargetLevel;
+    address creator;
+  }
+
+  mapping(address => mapping(uint256 => uint256)) level;
   mapping(address => bool) private squadMember;
   mapping(address => mapping(address => bool))private multiMintKeyUsed;
+  mapping(address => bool) allLevels;
+  mapping(address => LevelUnlockData) levelData;
+  mapping(address => mapping(uint => bool)) unlockedLevels;
   DGToken public dgToken;
 
   constructor(
@@ -59,22 +73,94 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
   }
 
   modifier onlyMember {
-    require(squadMember[msg.sender] == true, "You do not have a valid key to access this functionality");
+    if(msg.sender != owner()){
+      require(squadMember[msg.sender] == true, "Only DreadGang members can access this functionality");
+    }
     _;
   }
 
-  function _setOptionId (IPublicLock _lock) private returns(uint){
-    IPublicLock lock = _lock;
-    bool hasKey = lock.getHasValidKey(msg.sender);
-    require(hasKey == true, "");
-    address mintLockAddress = address(mintLock);
-    address multiMintLockAddress = address(multiMintLock);
-    if(mintLockAddress == address(lock)){
+  // internal
+  function _baseURI() internal view virtual override returns (string memory) {
+    return baseURI;
+  }
+
+  function _levelUp(address _account, uint256 _tokenId) internal returns(uint) {
+   uint256 currentLevel = level[_account][_tokenId];
+   uint256 newLevel = currentLevel + 1;
+   level[_account][_tokenId] = newLevel;
+   return newLevel;
+  }
+
+  // @dev To get the level of an nft
+  function getLevel(address _account, uint _tokenId) public view onlyMember returns(uint){
+    require(_exists(_tokenId), "Query for non existent token");
+    return level[_account][_tokenId];
+  } 
+
+// @dev To level up an nft
+  function levelUp(IPublicLock _levelLock, uint _tokenId) public payable onlyMember returns(uint) {
+    require(_exists(_tokenId), "ERC721Metadata: URI query for nonexistent token");
+    IPublicLock levelLock =_levelLock;
+    address levelLockAddress = address(levelLock);
+    require(allLevels[levelLockAddress], "This level does not exist");
+    uint currentLevel = level[msg.sender][_tokenId];
+    
+    require(_hasValidKey(msg.sender, levelLock), "You do not have a valid key to unlock this level"); // Prevent level creator from using their lock to level up. To level up u must use others' level up keys.
+    require(currentLevel >= levelData[levelLockAddress].minTargetLevel , "You do not meet the minimum level to use this key");
+    require(unlockedLevels[levelLockAddress][_tokenId] == false, "Already unlocked this level");
+
+    if (msg.sender != owner()) {
+      require(msg.sender != levelData[levelLockAddress].creator, "Cannot level up with level created by you");
+      (bool _sent, ) = msg.sender.call{value: cost}("");
+      require(_sent, "Failed to send level Up fees");
+    }
+    uint newLevel = _levelUp(msg.sender, _tokenId);
+    unlockedLevels[levelLockAddress][_tokenId] = true;
+
+    return newLevel;
+  }
+
+
+// @dev To create a new level lock
+  function createLevelUpLock(IPublicLock _levelLock, uint _minTargetLevel)public payable onlyMember {
+    IPublicLock levelToUnlock = _levelLock;
+    address levelToUnlockAddr =address(levelToUnlock);
+    require(_minTargetLevel >= 0, "Enter valid number greater than or equal to 0");
+    require(_hasValidKey(msg.sender, levelToUnlock), "You do not have a valid key for this lock");
+    require(allLevels[levelToUnlockAddr] == false, "This level has already been created");
+    uint duesOption = _setOptionId(_minTargetLevel);
+    uint levelDuesOption;
+    if(duesOption == 0){
+      levelDuesOption = gatePassNoob;
+    } else if (duesOption == 1){
+      levelDuesOption = gatePassHustler;
+    }else if (duesOption == 2){
+      levelDuesOption = gatePassOG;
+    }else {
+      levelDuesOption = 0;
+    }
+    if(msg.sender != owner()) {
+      require(msg.value >= levelDuesOption, "Insufficient dues to execute this function");
+      // require(payable(address(this)).send(cost), "Failed to transfer level Up fees");
+    }
+
+    allLevels[levelToUnlockAddr] = true;
+    _setLevelUnLockData(levelToUnlockAddr, true, _minTargetLevel);
+  }
+
+  function _setLevelUnLockData(address _levelToUnlockAddr, bool _init, uint _minTargetLevel) internal {
+    levelData[_levelToUnlockAddr] = LevelUnlockData(_levelToUnlockAddr, _init, _minTargetLevel, msg.sender);
+  }
+
+  function _setOptionId (uint _option) internal returns(uint){
+    if(_option >= 10){
         _optionId = 0;
-    } else if (multiMintLockAddress == address(lock)) {
+    } else if (_option >= 40) {
         _optionId = 1;
-    } else {
+    } else if (_option >= 100) {
         _optionId = 2;
+    } else {
+      _optionId = 3;
     }
     return _optionId;
   }
@@ -107,27 +193,6 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     bool hasKey = pubLock.getHasValidKey(_account);
     return hasKey;
   }
-
-  // internal
-  function _baseURI() internal view virtual override returns (string memory) {
-    return baseURI;
-  }
-  
-  // function getChainId() public view returns(uint) {
-  //   return IUnlockV11(unlockRinkeby).chainId();
-  // }
-  // function getHasValidKey(
-  //   address _user
-  // ) external view returns (bool);
-
-
-  // function mintItem(address to, string memory uri) public onlyMember returns (uint256) {
-  //   _tokenIdCounter.increment();
-  //   uint256 tokenId = _tokenIdCounter.current();
-  //   _safeMint(to, tokenId);
-  //   _setTokenURI(tokenId, uri);
-  //   return tokenId;
-  // }
 
   // public
   // Mint single nft
@@ -165,6 +230,8 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
       multiMintKeyUsed[address(multiMintLock)][msg.sender] = true;
     }
 
+    // Todo
+    // - Charge DGTokens for multiMinting
     for (uint256 i = 1; i <= _mintAmount; i++) {
       _tokenIdCounter.increment();
       uint256 tokenId = _tokenIdCounter.current();
@@ -173,18 +240,19 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
   }
 
-  // function walletOfOwner(address _owner)
-  //   public
-  //   view
-  //   returns (uint256[] memory)
-  // {
-  //   uint256 ownerTokenCount = balanceOf(_owner);
-  //   uint256[] memory tokenIds = new uint256[](ownerTokenCount);
-  //   for (uint256 i; i < ownerTokenCount; i++) {
-  //     tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
-  //   }
-  //   return tokenIds;
-  // }
+// @Dev Get the number of nfts by tokenIds an address has
+  function walletOfOwner(address _owner)
+    public
+    view
+    returns (uint256[] memory)
+  {
+    uint256 ownerTokenCount = balanceOf(_owner);
+    uint256[] memory tokenIds = new uint256[](ownerTokenCount);
+    for (uint256 i; i < ownerTokenCount; i++) {
+      tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
+    }
+    return tokenIds;
+  }
 
   function tokenURI(uint256 tokenId)
     public
