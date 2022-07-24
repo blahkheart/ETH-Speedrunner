@@ -21,7 +21,31 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Ethereum App</title>
+    <title>DreadGang</title>
+    <!-- unlock protocol scripts -->
+    <script>
+      (function (d, s) {
+        var js = d.createElement(s),
+          sc = d.getElementsByTagName(s)[0];
+        js.src = "https://paywall.unlock-protocol.com/static/unlock.latest.min.js";
+        sc.parentNode.insertBefore(js, sc);
+      }(document, "script"));
+    </script>
+    <script>
+      var unlockProtocolConfig = {
+        network: 4,
+        locks: {
+          '0xDc06312e21053dE7ecf7B00E3910f12BcC240BbF': {
+            network: 4,
+            name: 'DreadGang membership'
+          }
+        },
+        callToAction: {
+          "default": "Become a member to mint NFTs"
+        },
+        pessimistic: true
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

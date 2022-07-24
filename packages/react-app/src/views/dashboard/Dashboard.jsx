@@ -1,6 +1,6 @@
 import { Button, Card, Col, Space, Spin, Input, List, Menu, Row, Divider } from "antd";
 import "antd/dist/antd.css";
-import { useContractReader } from "eth-hooks";
+// import { useContractReader } from "eth-hooks";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 const { ethers } = require("ethers");
@@ -45,8 +45,8 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
 
   const nftPreview = (
       <>
-        <Row>
-          <Col>    
+        {/* <Row>
+          <Col>     */}
             <div style={{ padding: 8, marginTop: 32, width: 450, margin: "auto" }}>
               <Card title="Street Cred">
                 <div style={{ padding: 8, display: "flex" }}>
@@ -61,7 +61,7 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
                     }}
                 />
                 <Button
-                    type={"danger"}
+                    type={"secondary"}
                     loading={isLoading}
                     onClick={async () => {
                         setIsLoading(true);
@@ -80,9 +80,9 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
                       style={{
                         width: 240,
                       }}
-                      cover={<img alt="NFT Info" src={nftData ? nftData.image : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"} />}
+                      cover={<img alt="Load NFT Info ☝️" src={nftData ? nftData.image : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"} />}
                     >
-                      <Meta title={nftData && nftData.name ? nftData.name : "DreadGang #1"} description={nftData && nftData.nftLevel >= 0 ? `Level: ${nftData.nftLevel}` : <Spin size="small" />} />
+                      <Meta title={nftData && nftData.name ? nftData.name : "DreadGang #"} description={nftData && nftData.nftLevel >= 0 ? `Level: ${nftData.nftLevel}` : <Spin size="small" />} />
                     </Card>) : (
                     <Space size="middle">
                         <Spin />
@@ -91,8 +91,8 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
                 </div>
               </Card>
             </div>
-          </Col>
-        </Row>
+          {/* </Col>
+        </Row> */}
       </>
   );
 
@@ -141,7 +141,6 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
     
     const levelUp = (
         <>
-
             <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
                 <Card title="Level Up">
                     <div style={{ padding: 8 }}>
@@ -184,14 +183,13 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
                     </div>
                 </Card>
             </div> 
-
       </>
     );
 
   return (
     <>
       <Row>
-        <Col>
+        <Col span={24}>
             {nftPreview}
             <Divider />
             {createLevel}   

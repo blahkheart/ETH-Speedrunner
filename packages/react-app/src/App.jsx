@@ -556,64 +556,28 @@ function App(props) {
     );
   };
 
-  //DASHBOARD 
-  const [levelLockData, setLevelLockData] = useState({
-    address: "",
-    minTargetLevel: null
-  });
-  const [levelUpData, setLevelUpData] = useState({
-    address: "",
-    tokenId: null
-  });
-  const [isSellAmountApproved, setIsSellAmountApproved] = useState();
-  const [levelingUp, setLevelingUp] = useState();
-  const [nftInView, setNftInView] = useState({});
-  const costToLevelUp = 0.005;
-  const { Meta } = Card;
-
-  // Get NFT Data by TokenId
-  const getNFTData = _tokenId => {
-    try {
-      let nftData = {};
-      let nftLevel = useContractReader(readContracts, "DreadGang", "getLevel", [address, _tokenId]).toNumber();
-      if (yourCollectibles && yourCollectibles.length) {
-        for (let i = 0; i < yourCollectibles.length; i++) {
-          let id = yourCollectibles[i].id.toNumber();
-          if (id == _tokenId) {
-            nftData = { ...yourCollectibles[i], nftLevel };
-          }
-        }
-      }
-      console.log("NFT DATA:::", nftData);
-      return nftData;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  // getNFTData(1);
+  ////////unlock protocol settings////////////////////
+  // const [isLocked, setIsLocked] = useState();
 
   // useEffect(() => {
-  //   const viewCollectible = async () => {
-  //     try {
-  //       let nftData = {};
-  //       let nftLevel = useContractReader(readContracts, "DreadGang", "getLevel", [address, _tokenId]).toNumber();
-  //       if (yourCollectibles && yourCollectibles.length) {
-  //         for (let i = 0; i < yourCollectibles.length; i++) {
-  //           let id = yourCollectibles[i].id.toNumber();
-  //           if (id == _tokenId) {
-  //             nftData = { ...yourCollectibles[i], nftLevel };
-  //           }
-  //         }
-  //       }
-  //       console.log("NFT DATA:::", nftData);
-  //       return nftData;
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //     // setNftInView(collectibleUpdate);
-  //   };
-  //   viewCollectible();
-  // }, [address, yourCollectibles]);
+		// window.addEventListener("unlockProtocol", unlockHandler)
+		// const unsubscribe = subscribe(...);
+		// return unsubscribe
+    // console.log("USER CHANGED TO: ", address);
+	// }, [address]);
+
+  //add unlock protocol window event listener
+  // window.addEventListener('unlockProtocol', function(e) {
+  //   var state = e.detail;
+
+  //   if(state === "locked"){
+  //     console.log("LOCKED!!");
+  //   } else {
+  //     // Current visitor is a member
+  //     console.log("User is a MEMBER!!");
+  //   }  
+  // })
+  //////////UNLOCK PROTOCOL END////////////////////
 
 
   return (
@@ -697,6 +661,17 @@ function App(props) {
               >
                 MINT NFT
               </Button>
+              {/* <Button
+                disabled={minting}
+                shape="round"
+                size="large"
+                onClick={() => {
+                  console.log("Button clicked!");
+                }}
+                style={{ marginLeft: 15, marginRight: 15 }}
+              >
+                BECOME A MEMBER
+              </Button> */}
             </div>
             <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
@@ -766,147 +741,6 @@ function App(props) {
                 readContracts={readContracts}
                 writeContracts={writeContracts}
               />
-              {/* <div style={{ padding: 8, marginTop: 32, width: 450, margin: "auto" }}>
-                <Card title="Street Cred">
-                  <div style={{ padding: 8, display: "flex" }}>
-                    <Input
-                      style={{ textAlign: "center", marginBottom: 15 }}
-                      placeholder={"Enter token Id"}
-                      type="number"
-                      value={""}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        console.log("NEW VALUE", newValue);
-                        const nftData = getNFTData(newValue);
-                        setNftInView(nftData);
-                      }}
-                    />
-                    <Button
-                      type={"danger"}
-                      loading={false}
-                      onClick={() => {
-                        // setBuying(true);
-                        // await tx(writeContracts.Vendor.buyTokens({ value: ethCostToPurchaseTokens }));
-                        // setBuying(false);
-                      }}
-                      disabled={false}
-                    >
-                      Load
-                    </Button>
-                  </div>
-                  <div style={{ padding: 8, display: "flex", justifyContent: "center" }}>
-                    <Card
-                      hoverable
-                      style={{
-                        width: 240,
-                      }}
-                      cover={<img alt="example" src={nftInView ? nftInView.image : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"} />}
-                    >
-                      <Meta title="DreadGang #1" description="Level: 2" />
-                    </Card>
-                  </div>
-                </Card>
-              </div>
-              <Divider />
-              <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-                <Card title="Create level">
-                  <div style={{ padding: 8 }}>
-                    <Input
-                      style={{ textAlign: "center", marginBottom: 15 }}
-                      placeholder={"Lock address"}
-                      value={""}
-                      onChange={e => {
-                        const newValue = e.target.value.startsWith(".") ? "0." : e.target.value;
-                        const buyAmount = {
-                          value: newValue,
-                          valid: /^\d*\.?\d+$/.test(newValue)
-                        }
-                        // setlevelLockAddress(buyAmount);
-                      }}
-                    />
-                    <Input
-                      style={{ textAlign: "center" }}
-                      placeholder={"Minimum target level"}
-                      value={""}
-                      onChange={e => {
-                        const newValue = e.target.value.startsWith(".") ? "0." : e.target.value;
-                        const buyAmount = {
-                          value: newValue,
-                          valid: /^\d*\.?\d+$/.test(newValue)
-                        }
-                        // setTokenBuyAmount(buyAmount);
-                      }}
-                    />
-                  </div>
-                  <div style={{ padding: 8 }}>
-                    <Button
-                      type={"danger"}
-                      loading={false}
-                      onClick={async () => {
-                        // setBuying(true);
-                        // await tx(writeContracts.Vendor.buyTokens({ value: ethCostToPurchaseTokens }));
-                        // setBuying(false);
-                      }}
-                      disabled={false}
-                    >
-                      Create New Level
-                    </Button>
-                  </div>
-                </Card>
-              </div>
-              <Divider />
-              <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-                <Card title="Level Up">
-                    <div style={{ padding: 8 }}>
-              
-                        <Input
-                          style={{ textAlign: "center", marginBottom: 15 }}
-                          placeholder={"Level lock address"}
-                          value={levelUpData.address}
-                          onChange={e => {
-                            const newValue = e.target.value;
-                            const levelUpData = {
-                              address: newValue
-                              // tokenId: levelUpData.tokenId
-                            }
-                            console.log("lv1", levelUpData);
-                            setLevelUpData(levelUpData);
-                          }}
-                        />
-                        <Input
-                          style={{ textAlign: "center" }}
-                          placeholder={"Token Id"}
-                          value={levelUpData.tokenId}
-                          onChange={e => {
-                            const newValue = e.target.value;
-                            const levelUpData = {
-                              // address: levelUpData.address,
-                              minTargetLevel: newValue
-                            }
-                            console.log("lv2", levelUpData);
-                            setLevelUpData(levelUpData);
-                          }}
-                        />
-                    </div>
-                    
-
-                  <div style={{ padding: 8 }}>
-                    <Button
-                      type={"primary"}
-                      loading={levelingUp}
-                      onClick={async () => {
-                        setLevelingUp(true);
-                        // await tx(writeContracts.DreadGang.levelUp(levelUpData.address, levelUpData.tokenId { value: costToLevelUp }));
-                        await tx(writeContracts.DreadGang.levelUp(levelUpData.address, levelUpData.tokenId, { value: costToLevelUp }));
-                        setLevelingUp(false);
-                      }}
-                      disabled={false}
-                    >
-                      Level Up
-                    </Button>
-                  </div>
-                </Card>
-              </div> */}
             </div>
           </Route>
 
