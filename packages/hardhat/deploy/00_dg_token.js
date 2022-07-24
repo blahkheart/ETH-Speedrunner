@@ -6,12 +6,13 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
+  const ownerAddress = "0xCA7632327567796e51920F6b16373e92c7823854";
 
   // await deploy("DGToken", {
   await deploy("DGToken", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [ownerAddress],
     log: true,
   });
 
