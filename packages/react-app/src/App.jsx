@@ -19,13 +19,13 @@ import Fortmatic from "fortmatic";
 // import { create } from "ipfs-http-client";
 import React, { useCallback, useEffect, useState } from "react";
 import ReactJson from "react-json-view";
-import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter, useHistory, Link, Route, Switch } from "react-router-dom";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { Dashboard } from "./views";
+import { Dashboard, Level } from "./views";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
@@ -37,9 +37,9 @@ import metadatajson from "./output/json/_metadata.json";
 const { BufferList } = require("bl");
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
-
+// unlock contract abis
+const abis = require("@unlock-protocol/contracts");
 const { ethers } = require("ethers");
-
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -257,6 +257,9 @@ function App(props) {
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
+  console.log("READCONTRACTS", readContracts);
+
+  const tokenBalance = useContractReader(readContracts, "DGToken", "balanceOf", [address]);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -288,6 +291,9 @@ function App(props) {
   // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "DreadGang", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
+
+  const createLevelEvents = useEventListener(readContracts, "DreadGang", "CreateLevel", localProvider, 1);
+  console.log("📟 CreateLevel events:", createLevelEvents);
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -525,6 +531,7 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
+  // const routeHistory = useHistory();
 
   // the json source for minting the nfts
   const json = metadatajson;
@@ -556,28 +563,47 @@ function App(props) {
     );
   };
 
-  ////////unlock protocol settings////////////////////
-  // const [isLocked, setIsLocked] = useState();
+  ////////////////Unlock Protocol///////////////////
+  // const unlockData = JSON.parse(window.localStorage.getItem("unlock"));
+  // const publicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
+  useEffect(() => {
+    // if (unlockData && publicLockData) {
+      // const unlockAddress = unlockData.unlockAddress;
+      // const publicLockAddress = publicLockData.publicLockAddress;
+    //   setDeployedUnlockAddress(unlockAddress);
+    //   setPublicLockAddress(publicLockAddress);
+    // }
+    const unlockAddress = "0xd8c88be5e8eb88e38e6ff5ce186d764676012b0b"; //deployed Unlock Contract Rinkeby
+    const publicLockAddress = "0x2144842F37fa7a2F1e86bC77320FA348d0ab5981"; //random lock deployed on Rinkeby
+    setDeployedUnlockAddress(unlockAddress);
+    setPublicLockAddress(publicLockAddress);
+  }, []);
 
-  // useEffect(() => {
-		// window.addEventListener("unlockProtocol", unlockHandler)
-		// const unsubscribe = subscribe(...);
-		// return unsubscribe
-    // console.log("USER CHANGED TO: ", address);
-	// }, [address]);
+  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState();
+  const [publicLockAddress, setPublicLockAddress] = useState();
+  const [publicLock, setPublicLock] = useState();
+  const [unlock, setUnlock] = useState();
 
-  //add unlock protocol window event listener
-  // window.addEventListener('unlockProtocol', function(e) {
-  //   var state = e.detail;
-
-  //   if(state === "locked"){
-  //     console.log("LOCKED!!");
-  //   } else {
-  //     // Current visitor is a member
-  //     console.log("User is a MEMBER!!");
-  //   }  
-  // })
-  //////////UNLOCK PROTOCOL END////////////////////
+  useEffect(() => {
+    const readyUnlock = () => {
+      let unlockContract;
+      let publicLockContract;
+      try {
+        if (deployedUnlockAddress) {
+          unlockContract = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner)
+        }
+        if (publicLockAddress) {
+          publicLockContract = new ethers.Contract(publicLockAddress, abis.PublicLockV10.abi, userSigner)
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      setUnlock(unlockContract);
+      setPublicLock(publicLockContract);
+    };
+    readyUnlock();
+  }, [address, yourLocalBalance]);
+  ////////////// UNLOCK PROTOCOL: THE END /////////////
 
 
   return (
@@ -617,17 +643,17 @@ function App(props) {
               Transfers
             </Link>
           </Menu.Item>
-          <Menu.Item key="/ipfsup">
+          <Menu.Item key="/levels">
             <Link
               onClick={() => {
-                setRoute("/ipfsup");
+                setRoute("/levels");
               }}
-              to="/ipfsup"
+              to="/levels"
             >
-              IPFS Upload
+              Created Levels
             </Link>
           </Menu.Item>
-          <Menu.Item key="/ipfsdown">
+          {/* <Menu.Item key="/ipfsdown">
             <Link
               onClick={() => {
                 setRoute("/ipfsdown");
@@ -636,7 +662,7 @@ function App(props) {
             >
               IPFS Download
             </Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="/debugcontracts">
             <Link
               onClick={() => {
@@ -738,6 +764,7 @@ function App(props) {
                 address={address}
                 mainnetProvider={mainnetProvider}
                 tx={tx}
+                tokenBalance={tokenBalance}
                 readContracts={readContracts}
                 writeContracts={writeContracts}
               />
@@ -762,83 +789,47 @@ function App(props) {
             </div>
           </Route>
 
-          <Route path="/ipfsup">
-            <div style={{ paddingTop: 32, width: 740, margin: "auto", textAlign: "left" }}>
-              <ReactJson
-                style={{ padding: 8 }}
-                src={yourJSON}
-                theme="pop"
-                enableClipboard={false}
-                onEdit={(edit, a) => {
-                  setYourJSON(edit.updated_src);
-                }}
-                onAdd={(add, a) => {
-                  setYourJSON(add.updated_src);
-                }}
-                onDelete={(del, a) => {
-                  setYourJSON(del.updated_src);
+          <Route path="/levels">
+            <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <List
+                bordered
+                dataSource={createLevelEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item.args[1].toNumber()}>
+                      Lv =&gt; &nbsp;
+                      <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> &nbsp;
+                      <Button
+                        type="link"
+                        to={`/levels/${item.args[0]}`}
+                        onClick={() => {
+                          routeHistory.push(`/levels/${item.args[0]}`);
+                        }}
+                      >
+                        <span>Target Lv =&gt; {item.args[1].toNumber()}</span>
+                      </Button>
+                      Creator =&gt; &nbsp;
+                      <Address address={item.args[2]} ensProvider={mainnetProvider} fontSize={16} />
+                    </List.Item>
+                  );
                 }}
               />
             </div>
-
-            <Button
-              style={{ margin: 8 }}
-              loading={sending}
-              size="large"
-              shape="round"
-              type="primary"
-              onClick={async () => {
-                console.log("UPLOADING...", yourJSON);
-                setSending(true);
-                setIpfsHash();
-                const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
-                if (result && result.path) {
-                  setIpfsHash(result.path);
-                }
-                setSending(false);
-                console.log("RESULT:", result);
-              }}
-            >
-              Upload to IPFS
-            </Button>
-
-            <div style={{ padding: 16, paddingBottom: 150 }}>{ipfsHash}</div>
           </Route>
-          <Route path="/ipfsdown">
-            <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
-              <Input
-                value={ipfsDownHash}
-                placeHolder="IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"
-                onChange={e => {
-                  setIpfsDownHash(e.target.value);
-                }}
-              />
-            </div>
-            <Button
-              style={{ margin: 8 }}
-              loading={sending}
-              size="large"
-              shape="round"
-              type="primary"
-              onClick={async () => {
-                console.log("DOWNLOADING...", ipfsDownHash);
-                setDownloading(true);
-                setIpfsContent();
-                const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
-                if (result && result.toString) {
-                  setIpfsContent(result.toString());
-                }
-                setDownloading(false);
-              }}
-            >
-              Download from IPFS
-            </Button>
-
-            <pre style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 150 }}>{ipfsContent}</pre>
+          <Route path="/levels/:id">
+            <Level></Level>
           </Route>
           <Route path="/debugcontracts">
             <Contract
               name="DreadGang"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="DGToken"
               signer={userSigner}
               provider={localProvider}
               address={address}

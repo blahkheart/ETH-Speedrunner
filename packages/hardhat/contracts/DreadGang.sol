@@ -20,8 +20,11 @@ import "./DGToken.sol";
 */
 
 // Change log
-// - Charge 100 DGTokens for multiMinting
-// - remove setMaxMintAmount function
+// - Charged 100 DGTokens for multiMinting
+// - removed setMaxMintAmount function
+// TODO
+// require user to be Hustler or higher to use multimint
+// require multiMint lock to be set only once
 
 contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
   using Strings for uint256;
@@ -98,7 +101,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     _;
   }
 
-  //@Dev Sets the level threshold which determines the current class of the NFT
+  //@Notice Sets the level threshold which determines the current class of the NFT
   function setBaseLevelRate(uint32 _targetBaseRate, uint32 _newBaseRate)public onlyOwner {
     if(_targetBaseRate == baseLevelNoob)
       baseLevelNoob = _newBaseRate;
@@ -108,7 +111,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
       baseLevelOG = _newBaseRate;
   }
 
-  //@Dev Sets the fee charged for creating a level at the current class of the NFT
+  //@Notice Sets the fee charged for creating a level at the current class of the NFT
   function setBaseGatePassRate(uint32 _targetBaseRate, uint32 _newBaseRate)public onlyOwner {
     if(_targetBaseRate == gatePassNoob)
       gatePassNoob = _newBaseRate;
@@ -118,17 +121,17 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
       gatePassOG = _newBaseRate;
   }
 
-  //@Dev Sets the DGToken reward multiplier for level ups
+  //@Notice Sets the DGToken reward multiplier for level ups
   function setBaseLevelUpReward(uint32 _newBaseLevelUpReward)public onlyOwner {
     baseLevelUpReward = _newBaseLevelUpReward;
   }
 
-  //@Dev Sets the base % DGTokens charged against the current level for leveling up the NFT
+  //@Notice Sets the base % DGTokens charged against the current level for leveling up the NFT
   function setBaseLevelUpFee(uint8 _newBaseLevelUpFee)public onlyOwner {
     baseLevelUpFee = _newBaseLevelUpFee;
   }
 
-  //@Dev Sets DGTokens vendor address;
+  //@Notice Sets DGTokens vendor address;
   function setVendorAddress(address _vendor)public onlyOwner {
     vendor = _vendor;
   }
@@ -145,19 +148,19 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
    return newLevel;
   }
 
-// @dev To get the level of an nft
+// @Notice To get the level of an nft
   function getLevel(address _account, uint _tokenId) public view returns(uint){
     require(_exists(_tokenId), "Non existent token");
     return level[_account][_tokenId];
   } 
 
-// @dev Check if an address is a DreadGang member
+// @Notice Check if an address is a DreadGang member
   function isSquadMember(address _account) public view returns(bool){
     bool dadaG = squadMember[_account];
     return dadaG;
   } 
 
-// @dev To level up an nft
+// @Notice To level up an nft
   function levelUp(IPublicLock _levelLock, uint _tokenId) public payable onlyMember returns(uint) {
     require(_exists(_tokenId), "Nonexistent token");
     IPublicLock levelLock =_levelLock;
@@ -190,7 +193,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
   }
 
 
-// @dev To create a new level lock
+// @Notice To create a new level lock
   function createLevelUpLock(IPublicLock _levelLock, uint _minTargetLevel)public payable onlyMember {
     IPublicLock levelToUnlock = _levelLock;
     address levelToUnlockAddr = address(levelToUnlock);
@@ -218,12 +221,12 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     emit CreateLevel(levelToUnlockAddr, _minTargetLevel, msg.sender);
   }
 
-// @dev set the level to unlock data
+// @Notice set the level to unlock data
   function _setLevelUnLockData(address _levelToUnlockAddr, bool _init, uint _minTargetLevel) private {
     levelData[_levelToUnlockAddr] = LevelUnlockData(_levelToUnlockAddr, _init, _minTargetLevel, msg.sender);
   }
 
-// @dev select different options based on number input 
+// @Notice select different options based on number input 
   function _setOptionId (uint _option) internal view returns(uint){
     uint8 _optionId;
     if(_option >= baseLevelNoob){

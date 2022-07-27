@@ -1,17 +1,15 @@
-import { Button, Card, Col, Space, Spin, Input, List, Menu, Row, Divider } from "antd";
+import { Button, Card, Col, Space, Spin, Input, Row, Divider } from "antd";
 import "antd/dist/antd.css";
-// import { useContractReader } from "eth-hooks";
-import React, { useState, useEffect } from "react";
+import { DGTokenBalance } from "../../components";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 const { ethers } = require("ethers");
 
-
-const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContracts, writeContracts, targetNetwork }) => {
+const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContracts, writeContracts, tokenBalance }) => {
   const routeHistory = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [nftData, setNftData] = useState({});
   const [levelLockAddress, setLevelLockAddress] = useState();
-//   const [nftLevel, setNftLevel] = useState();
   const [levelUpAddress, setLevelUpAddress] = useState();
   const [levelingUp, setLevelingUp] = useState();
   const [tokenId, setTokenId] = useState();
@@ -19,29 +17,28 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
   const [minTargetLevel, setMinTargetLevel] = useState();
   const costToLevelUp = "0.005";
   const { Meta } = Card;
- 
+
   const loadNFTData = async () => {
     try {
-        let nftData;
-        let nftLevel;
-        const _level = await readContracts.DreadGang.getLevel(address, tokenToLoadId);
-        if (_level) {
-            nftLevel = _level.toNumber();
-            if (yourCollectibles && yourCollectibles.length) {
-                for (let i = 0; i < yourCollectibles.length; i++) {
-                    let id = yourCollectibles[i].id.toNumber();
-                    if (id == tokenToLoadId) {
-                        nftData = { ...yourCollectibles[i], nftLevel };
-                    }
-                }
+      let nftData;
+      let nftLevel;
+      const _level = await readContracts.DreadGang.getLevel(address, tokenToLoadId);
+      if (_level) {
+        nftLevel = _level.toNumber();
+        if (yourCollectibles && yourCollectibles.length) {
+          for (let i = 0; i < yourCollectibles.length; i++) {
+            let id = yourCollectibles[i].id.toNumber();
+            if (id == tokenToLoadId) {
+              nftData = { ...yourCollectibles[i], nftLevel };
             }
+          }
         }
-        setNftData(nftData);
+      }
+      setNftData(nftData);
     } catch (e) {
-        console.log(e);
+      console.log(e);
     }
-  }
-
+  };
 
   const nftPreview = (
       <>
@@ -98,104 +95,105 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
 
   const createLevel = (
     <>
-        <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-            <Card title="Create level">
-                <div style={{ padding: 8 }}>
-                    <Input
-                      style={{ textAlign: "center", marginBottom: 15 }}
-                      placeholder={"Lock address"}
-                      value={levelLockAddress}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setLevelLockAddress(newValue);
-                      }}
-                    />
-                    <Input
-                      style={{ textAlign: "center" }}
-                      placeholder={"Minimum target level"}
-                      value={minTargetLevel}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setMinTargetLevel(newValue);
-                      }}
-                    />
-                </div>
-                <div style={{ padding: 8 }}>
-                <Button
-                    type={"danger"}
-                    loading={false}
-                    onClick={async () => {
-                        setLevelingUp(true);
-                        await tx(writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, { value: ethers.utils.parseEther(costToLevelUp) }));
-                        setLevelingUp(false);
+      <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
+          <Card title="Create level">
+              <div style={{ padding: 8 }}>
+                  <Input
+                    style={{ textAlign: "center", marginBottom: 15 }}
+                    placeholder={"Lock address"}
+                    value={levelLockAddress}
+                    onChange={e => {
+                      const newValue = e.target.value;
+                      setLevelLockAddress(newValue);
                     }}
-                    disabled={false}
-                >
-                    Create New Level
-                </Button>
-                </div>
-            </Card>
-        </div>
+                  />
+                  <Input
+                    style={{ textAlign: "center" }}
+                    placeholder={"Minimum target level"}
+                    value={minTargetLevel}
+                    onChange={e => {
+                      const newValue = e.target.value;
+                      setMinTargetLevel(newValue);
+                    }}
+                  />
+              </div>
+              <div style={{ padding: 8 }}>
+              <Button
+                  type={"danger"}
+                  loading={false}
+                  onClick={async () => {
+                      setLevelingUp(true);
+                      await tx(writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, { value: ethers.utils.parseEther(costToLevelUp) }));
+                      setLevelingUp(false);
+                  }}
+                  disabled={false}
+              >
+                  Create New Level
+              </Button>
+              </div>
+          </Card>
+      </div>
     </>
   );
-    
-    const levelUp = (
-        <>
-            <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-                <Card title="Level Up">
-                    <div style={{ padding: 8 }}>
-                
-                        <Input
-                            style={{ textAlign: "center", marginBottom: 15 }}
-                            placeholder={"Level lock address"}
-                            value={levelUpAddress}
-                            onChange={e => {
+
+  const levelUp = (
+      <>
+          <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
+              <Card title="Level Up">
+                  <div style={{ padding: 8 }}>
+              
+                      <Input
+                          style={{ textAlign: "center", marginBottom: 15 }}
+                          placeholder={"Level lock address"}
+                          value={levelUpAddress}
+                          onChange={e => {
+                            const newValue = e.target.value;
+                            setLevelUpAddress(newValue);
+                          }}
+                      />
+          
+                      <Input
+                          style={{ textAlign: "center" }}
+                          placeholder={"Token Id"}
+                          value={tokenId}
+                          onChange={e => {
                               const newValue = e.target.value;
-                              setLevelUpAddress(newValue);
-                            }}
-                        />
-            
-                        <Input
-                            style={{ textAlign: "center" }}
-                            placeholder={"Token Id"}
-                            value={tokenId}
-                            onChange={e => {
-                                const newValue = e.target.value;
-                                console.log("New lv", newValue);
-                                setTokenId(newValue);
-                            }}
-                        />
-                    </div>
-                    
-                    <div style={{ padding: 8 }}>
-                        <Button
-                            type={"primary"}
-                            loading={levelingUp}
-                            onClick={async () => {
-                                setLevelingUp(true);
-                                await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId, { value: ethers.utils.parseEther(costToLevelUp)}));
-                                setLevelingUp(false);
-                            }}
-                            disabled={false}
-                        >
-                            Level Up
-                        </Button>
-                    </div>
-                </Card>
-            </div> 
-      </>
-    );
+                              console.log("New lv", newValue);
+                              setTokenId(newValue);
+                          }}
+                      />
+                  </div>
+                  
+                  <div style={{ padding: 8 }}>
+                      <Button
+                          type={"primary"}
+                          loading={levelingUp}
+                          onClick={async () => {
+                              setLevelingUp(true);
+                              await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId, { value: ethers.utils.parseEther(costToLevelUp)}));
+                              setLevelingUp(false);
+                          }}
+                          disabled={false}
+                      >
+                          Level Up
+                      </Button>
+                  </div>
+              </Card>
+          </div> 
+    </>
+  );
 
   return (
     <>
       <Row>
         <Col span={24}>
-            {nftPreview}
-            <Divider />
-            {createLevel}   
-            <Divider />
-            {levelUp}    
-        </Col>      
+          {nftPreview}
+          <Divider />
+          <DGTokenBalance title="DGToken (DGT)" balance={tokenBalance} />
+          {createLevel}
+          <Divider />
+          {levelUp}
+        </Col>
       </Row>
     </>
   );

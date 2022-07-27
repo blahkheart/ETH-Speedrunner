@@ -27,12 +27,14 @@ const layerConfigurations = [
     growEditionSizeTo: 5,
     layersOrder: [
       { name: "Background" },
-      { name: "Eyeball" },
-      { name: "Eye color" },
-      { name: "Iris" },
-      { name: "Shine" },
-      { name: "Bottom lid" },
-      { name: "Top lid" },
+      { name: "Body" },
+      { name: "Clothes" },
+      { name: "Beard" },
+      { name: "Mouths" },
+      { name: "eyes" },
+      { name: "nose" },
+      { name: "Hair" },
+      { name: "Accessory" },
     ],
   },
 ];
@@ -42,9 +44,9 @@ const shuffleLayerConfigurations = false;
 const debugLogs = false;
 
 const format = {
-  width: 512,
-  height: 512,
-  smoothing: false,
+  width: 768,
+  height: 768,
+  smoothing: true,
 };
 
 const gif = {

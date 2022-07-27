@@ -3,37 +3,45 @@
     "name": "Dread Gang #1",
     "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
     "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/1.png",
-    "dna": "9bbb5b6b181ea759599177d7b0416de3c1c6dddd",
+    "dna": "f26ef63856338cc3b31ee38143d1929b6ed313cc",
     "edition": 1,
-    "date": 1656687813689,
+    "date": 1658912086058,
     "attributes": [
       {
         "trait_type": "Background",
-        "value": "Black"
-      },
-      {
-        "trait_type": "Eyeball",
-        "value": "Red"
-      },
-      {
-        "trait_type": "Eye color",
         "value": "Yellow"
       },
       {
-        "trait_type": "Iris",
-        "value": "Small"
+        "trait_type": "Body",
+        "value": "Light"
       },
       {
-        "trait_type": "Shine",
-        "value": "Shapes"
+        "trait_type": "Clothes",
+        "value": "College"
       },
       {
-        "trait_type": "Bottom lid",
-        "value": "Low"
+        "trait_type": "Beard",
+        "value": "Full"
       },
       {
-        "trait_type": "Top lid",
-        "value": "Low"
+        "trait_type": "Mouths",
+        "value": "Skeptical"
+      },
+      {
+        "trait_type": "eyes",
+        "value": "Skeptical"
+      },
+      {
+        "trait_type": "nose",
+        "value": "Pointed"
+      },
+      {
+        "trait_type": "Hair",
+        "value": "Packed"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Airpod"
       }
     ],
     "compiler": "HashLips Art Engine"
@@ -42,37 +50,45 @@
     "name": "Dread Gang #2",
     "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
     "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/2.png",
-    "dna": "0de3c8add53f3a8fd2c6a653dad9f3a646255121",
+    "dna": "fbac1b0553b2fc12f07fb92b2d2fa1f851d3001d",
     "edition": 2,
-    "date": 1656687813905,
+    "date": 1658912086725,
     "attributes": [
       {
         "trait_type": "Background",
-        "value": "Black"
-      },
-      {
-        "trait_type": "Eyeball",
-        "value": "Red"
-      },
-      {
-        "trait_type": "Eye color",
         "value": "Yellow"
       },
       {
-        "trait_type": "Iris",
-        "value": "Small"
+        "trait_type": "Body",
+        "value": "White"
       },
       {
-        "trait_type": "Shine",
-        "value": "Shapes"
+        "trait_type": "Clothes",
+        "value": "Suite"
       },
       {
-        "trait_type": "Bottom lid",
-        "value": "Middle"
+        "trait_type": "Beard",
+        "value": "Full"
       },
       {
-        "trait_type": "Top lid",
-        "value": "High"
+        "trait_type": "Mouths",
+        "value": "Skeptical"
+      },
+      {
+        "trait_type": "eyes",
+        "value": "Skeptical"
+      },
+      {
+        "trait_type": "nose",
+        "value": "Pointed"
+      },
+      {
+        "trait_type": "Hair",
+        "value": "Elf"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Airpod"
       }
     ],
     "compiler": "HashLips Art Engine"
@@ -81,37 +97,45 @@
     "name": "Dread Gang #3",
     "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
     "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/3.png",
-    "dna": "c2709817a623ee9f2205ff09f5e19b9d142ed1c2",
+    "dna": "601f64b1aa4c4708a7162c0d0154a64a96f66a4c",
     "edition": 3,
-    "date": 1656687814152,
+    "date": 1658912087407,
     "attributes": [
       {
         "trait_type": "Background",
-        "value": "Black"
+        "value": "Blue"
       },
       {
-        "trait_type": "Eyeball",
-        "value": "Red"
+        "trait_type": "Body",
+        "value": "Light"
       },
       {
-        "trait_type": "Eye color",
-        "value": "Green"
+        "trait_type": "Clothes",
+        "value": "College"
       },
       {
-        "trait_type": "Iris",
-        "value": "Small"
+        "trait_type": "Beard",
+        "value": "Full"
       },
       {
-        "trait_type": "Shine",
-        "value": "Shapes"
+        "trait_type": "Mouths",
+        "value": "Grin"
       },
       {
-        "trait_type": "Bottom lid",
-        "value": "Low"
+        "trait_type": "eyes",
+        "value": "Ponder"
       },
       {
-        "trait_type": "Top lid",
-        "value": "High"
+        "trait_type": "nose",
+        "value": "Pointed"
+      },
+      {
+        "trait_type": "Hair",
+        "value": "Tint"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Airpod"
       }
     ],
     "compiler": "HashLips Art Engine"
@@ -120,37 +144,45 @@
     "name": "Dread Gang #4",
     "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
     "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/4.png",
-    "dna": "9a90509d2faeda9fe5f19852653a8033442665a0",
+    "dna": "2256d080448a5773d93709beaa011cff665f8200",
     "edition": 4,
-    "date": 1656687814354,
+    "date": 1658912088035,
     "attributes": [
       {
         "trait_type": "Background",
-        "value": "Black"
-      },
-      {
-        "trait_type": "Eyeball",
-        "value": "Red"
-      },
-      {
-        "trait_type": "Eye color",
         "value": "Yellow"
       },
       {
-        "trait_type": "Iris",
-        "value": "Small"
+        "trait_type": "Body",
+        "value": "Light"
       },
       {
-        "trait_type": "Shine",
-        "value": "Shapes"
+        "trait_type": "Clothes",
+        "value": "Suite"
       },
       {
-        "trait_type": "Bottom lid",
-        "value": "Low"
+        "trait_type": "Beard",
+        "value": "Round"
       },
       {
-        "trait_type": "Top lid",
-        "value": "High"
+        "trait_type": "Mouths",
+        "value": "Skeptical"
+      },
+      {
+        "trait_type": "eyes",
+        "value": "Focus"
+      },
+      {
+        "trait_type": "nose",
+        "value": "Pointed"
+      },
+      {
+        "trait_type": "Hair",
+        "value": "Iwobi"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Airpod"
       }
     ],
     "compiler": "HashLips Art Engine"
@@ -159,37 +191,45 @@
     "name": "Dread Gang #5",
     "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
     "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/5.png",
-    "dna": "cae62f78fabca5e60122454320c9fe02435fb992",
+    "dna": "6a833906b61e0aea203c9d881e22fa2b09a384a0",
     "edition": 5,
-    "date": 1656687814559,
+    "date": 1658912088670,
     "attributes": [
       {
         "trait_type": "Background",
+        "value": "Yellow"
+      },
+      {
+        "trait_type": "Body",
         "value": "Black"
       },
       {
-        "trait_type": "Eyeball",
-        "value": "Red"
+        "trait_type": "Clothes",
+        "value": "Senator"
       },
       {
-        "trait_type": "Eye color",
-        "value": "Red"
+        "trait_type": "Beard",
+        "value": "Chin"
       },
       {
-        "trait_type": "Iris",
-        "value": "Medium"
+        "trait_type": "Mouths",
+        "value": "Skeptical"
       },
       {
-        "trait_type": "Shine",
-        "value": "Shapes"
+        "trait_type": "eyes",
+        "value": "Ponder"
       },
       {
-        "trait_type": "Bottom lid",
-        "value": "Low"
+        "trait_type": "nose",
+        "value": "Pointed"
       },
       {
-        "trait_type": "Top lid",
-        "value": "Middle"
+        "trait_type": "Hair",
+        "value": "Tint"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Airpod"
       }
     ],
     "compiler": "HashLips Art Engine"

@@ -2,37 +2,45 @@
   "name": "Dread Gang #4",
   "description": "The OGs of the Metaverse. Come chill, shill and vibe with the Dread Gang",
   "image": "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/4.png",
-  "dna": "9a90509d2faeda9fe5f19852653a8033442665a0",
+  "dna": "2256d080448a5773d93709beaa011cff665f8200",
   "edition": 4,
-  "date": 1656687814354,
+  "date": 1658912088035,
   "attributes": [
     {
       "trait_type": "Background",
-      "value": "Black"
-    },
-    {
-      "trait_type": "Eyeball",
-      "value": "Red"
-    },
-    {
-      "trait_type": "Eye color",
       "value": "Yellow"
     },
     {
-      "trait_type": "Iris",
-      "value": "Small"
+      "trait_type": "Body",
+      "value": "Light"
     },
     {
-      "trait_type": "Shine",
-      "value": "Shapes"
+      "trait_type": "Clothes",
+      "value": "Suite"
     },
     {
-      "trait_type": "Bottom lid",
-      "value": "Low"
+      "trait_type": "Beard",
+      "value": "Round"
     },
     {
-      "trait_type": "Top lid",
-      "value": "High"
+      "trait_type": "Mouths",
+      "value": "Skeptical"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "Focus"
+    },
+    {
+      "trait_type": "nose",
+      "value": "Pointed"
+    },
+    {
+      "trait_type": "Hair",
+      "value": "Iwobi"
+    },
+    {
+      "trait_type": "Accessory",
+      "value": "Airpod"
     }
   ],
   "compiler": "HashLips Art Engine"
