@@ -19,13 +19,13 @@ import Fortmatic from "fortmatic";
 // import { create } from "ipfs-http-client";
 import React, { useCallback, useEffect, useState } from "react";
 import ReactJson from "react-json-view";
-import { BrowserRouter, useHistory, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { Dashboard, Level } from "./views";
+import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Level } from "./components";
+import { Dashboard, Levels } from "./views";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
@@ -788,36 +788,16 @@ function App(props) {
               />
             </div>
           </Route>
-
           <Route path="/levels">
-            <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <List
-                bordered
-                dataSource={createLevelEvents}
-                renderItem={item => {
-                  return (
-                    <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item.args[1].toNumber()}>
-                      Lv =&gt; &nbsp;
-                      <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> &nbsp;
-                      <Button
-                        type="link"
-                        to={`/levels/${item.args[0]}`}
-                        onClick={() => {
-                          routeHistory.push(`/levels/${item.args[0]}`);
-                        }}
-                      >
-                        <span>Target Lv =&gt; {item.args[1].toNumber()}</span>
-                      </Button>
-                      Creator =&gt; &nbsp;
-                      <Address address={item.args[2]} ensProvider={mainnetProvider} fontSize={16} />
-                    </List.Item>
-                  );
-                }}
-              />
-            </div>
+            <Levels createLevelEvents={createLevelEvents} mainnetProvider={mainnetProvider} />
           </Route>
-          <Route path="/levels/:id">
-            <Level></Level>
+          <Route path="/level/:id">
+            <Level
+              abis={abis}
+              userSigner={userSigner}
+              address={address}
+              dreadGangAddress={dreadGangAddress}
+            />
           </Route>
           <Route path="/debugcontracts">
             <Contract

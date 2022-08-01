@@ -137,49 +137,49 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
   );
 
   const levelUp = (
-      <>
-          <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-              <Card title="Level Up">
-                  <div style={{ padding: 8 }}>
-              
-                      <Input
-                          style={{ textAlign: "center", marginBottom: 15 }}
-                          placeholder={"Level lock address"}
-                          value={levelUpAddress}
-                          onChange={e => {
-                            const newValue = e.target.value;
-                            setLevelUpAddress(newValue);
-                          }}
-                      />
+    <>
+      <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
+          <Card title="Level Up">
+              <div style={{ padding: 8 }}>
           
-                      <Input
-                          style={{ textAlign: "center" }}
-                          placeholder={"Token Id"}
-                          value={tokenId}
-                          onChange={e => {
-                              const newValue = e.target.value;
-                              console.log("New lv", newValue);
-                              setTokenId(newValue);
-                          }}
-                      />
-                  </div>
-                  
-                  <div style={{ padding: 8 }}>
-                      <Button
-                          type={"primary"}
-                          loading={levelingUp}
-                          onClick={async () => {
-                              setLevelingUp(true);
-                              await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId, { value: ethers.utils.parseEther(costToLevelUp)}));
-                              setLevelingUp(false);
-                          }}
-                          disabled={false}
-                      >
-                          Level Up
-                      </Button>
-                  </div>
-              </Card>
-          </div> 
+                  <Input
+                      style={{ textAlign: "center", marginBottom: 15 }}
+                      placeholder={"Level lock address"}
+                      value={levelUpAddress}
+                      onChange={e => {
+                        const newValue = e.target.value;
+                        setLevelUpAddress(newValue);
+                      }}
+                  />
+      
+                  <Input
+                      style={{ textAlign: "center" }}
+                      placeholder={"Token Id"}
+                      value={tokenId}
+                      onChange={e => {
+                          const newValue = e.target.value;
+                          console.log("New lv", newValue);
+                          setTokenId(newValue);
+                      }}
+                  />
+              </div>
+              
+              <div style={{ padding: 8 }}>
+                  <Button
+                      type={"primary"}
+                      loading={levelingUp}
+                      onClick={async () => {
+                          setLevelingUp(true);
+                          await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId, { value: ethers.utils.parseEther(costToLevelUp)}));
+                          setLevelingUp(false);
+                      }}
+                      disabled={false}
+                  >
+                      Level Up
+                  </Button>
+              </div>
+          </Card>
+      </div>
     </>
   );
 

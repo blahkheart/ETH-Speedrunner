@@ -1,5 +1,29 @@
 // SPDX-License-Identifier: MIT
 
+// Amended by Dannithomx
+/**
+    !Disclaimer!
+    please review this code on your own before using any of
+    the following code for production.
+    Dannithomx will not be liable in any way if for the use 
+    of the code. That being said, the code has been tested 
+    to the best of the developers' knowledge to work as intended.
+*/
+
+  // Change Log 
+  // changed setPublicLock and setMintLock function visibility to external
+  // set require condition for setting gatepasses and baseLevels
+  // charge 100 dgTokens for multimint
+  // change levelUp mechanics to exclude _account and use _tokenId only
+  // set upper limit of _setOptionId
+  // check to ensure user is the owner of token being leveled up (optional)
+  // require user to be Hustler or higher to use multimint
+  // change setBaseGatePass function parameters to uint256 from 32
+  // grantKeys() function added
+
+  // TODO: (Optional) require multiMint lock to be set only once
+  // test _setOptionId function
+
 pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -7,7 +31,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./interface/IUnlockV11.sol";
+// import "./interface/IUnlockV11.sol";
 import "./interface/IPublicLockV10.sol";
 import "./DGToken.sol";
 
@@ -18,13 +42,6 @@ import "./DGToken.sol";
   @notice Explain to an end user what this does
   @dev Explain to a developer any extra details
 */
-
-// Change log
-// - Charged 100 DGTokens for multiMinting
-// - removed setMaxMintAmount function
-// TODO
-// require user to be Hustler or higher to use multimint
-// require multiMint lock to be set only once
 
 contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
   using Strings for uint256;
@@ -69,14 +86,14 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     uint minTargetLevel;
     address creator;
   }
-  mapping(address => mapping(uint256 => uint256)) level;
+  mapping(uint256 => uint256) private level;
   mapping(address => bool) private squadMember;
   mapping(address => mapping(address => bool))private multiMintKeyUsed;
   mapping(address => bool) allLevels;
   mapping(address => LevelUnlockData) public levelData;
-  mapping(address => mapping(uint => bool)) unlockedLevels;
+  mapping(address => mapping(uint => bool)) private unlockedLevels;
 
-// todo: edit events
+
   event LevelUp(address levelLock, uint256 indexed tokenId, uint256 indexed newLevel);
   event CreateLevel(address indexed levelLock, uint256 indexed minTargetLevel, address creator);
 
@@ -101,37 +118,39 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     _;
   }
 
-  //@Notice Sets the level threshold which determines the current class of the NFT
-  function setBaseLevelRate(uint32 _targetBaseRate, uint32 _newBaseRate)public onlyOwner {
-    if(_targetBaseRate == baseLevelNoob)
-      baseLevelNoob = _newBaseRate;
-    else if(_targetBaseRate == baseLevelHustler)
-      baseLevelHustler = _newBaseRate;
-    else if(_targetBaseRate == baseLevelOG)
-      baseLevelOG = _newBaseRate;
+  //@Dev Sets the level threshold which determines the current class of the NFT
+  function setBaseLevel(uint32 _targetBaseLevel, uint32 _newBaseLevel)public onlyOwner {
+    require(initialRevenue, "before initial revenue");
+    if(_targetBaseLevel == baseLevelNoob)
+      baseLevelNoob = _newBaseLevel;
+    else if(_targetBaseLevel == baseLevelHustler)
+      baseLevelHustler = _newBaseLevel;
+    else if(_targetBaseLevel == baseLevelOG)
+      baseLevelOG = _newBaseLevel;
   }
 
-  //@Notice Sets the fee charged for creating a level at the current class of the NFT
-  function setBaseGatePassRate(uint32 _targetBaseRate, uint32 _newBaseRate)public onlyOwner {
-    if(_targetBaseRate == gatePassNoob)
-      gatePassNoob = _newBaseRate;
-    else if(_targetBaseRate == gatePassHustler)
-      gatePassHustler = _newBaseRate;
-    else if(_targetBaseRate == gatePassOG)
-      gatePassOG = _newBaseRate;
+  //@Dev Sets the fee charged for creating a level at the current class of the NFT
+  function setBaseGatePass(uint256 _targetBaseGatePass, uint256 _newBaseGatePass)public onlyOwner {
+    require(initialRevenue, "before initial revenue");
+    if(_targetBaseGatePass == gatePassNoob)
+      gatePassNoob = _newBaseGatePass;
+    else if(_targetBaseGatePass == gatePassHustler)
+      gatePassHustler = _newBaseGatePass;
+    else if(_targetBaseGatePass == gatePassOG)
+      gatePassOG = _newBaseGatePass;
   }
 
-  //@Notice Sets the DGToken reward multiplier for level ups
+  //@Dev Sets the DGToken reward multiplier for level ups
   function setBaseLevelUpReward(uint32 _newBaseLevelUpReward)public onlyOwner {
     baseLevelUpReward = _newBaseLevelUpReward;
   }
 
-  //@Notice Sets the base % DGTokens charged against the current level for leveling up the NFT
+  //@Dev Sets the base % DGTokens charged against the current level for leveling up the NFT
   function setBaseLevelUpFee(uint8 _newBaseLevelUpFee)public onlyOwner {
     baseLevelUpFee = _newBaseLevelUpFee;
   }
 
-  //@Notice Sets DGTokens vendor address;
+  //@Dev Sets DGTokens vendor address;
   function setVendorAddress(address _vendor)public onlyOwner {
     vendor = _vendor;
   }
@@ -141,50 +160,49 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     return baseURI;
   }
 
-  function _levelUp(address _account, uint256 _tokenId) private returns(uint) {
-   uint256 currentLevel = level[_account][_tokenId];
+  function _levelUp(uint256 _tokenId) private returns(uint) {
+   uint256 currentLevel = level[_tokenId];
    uint256 newLevel = currentLevel + 1;
-   level[_account][_tokenId] = newLevel;
+   level[_tokenId] = newLevel;
    return newLevel;
   }
 
-// @Notice To get the level of an nft
-  function getLevel(address _account, uint _tokenId) public view returns(uint){
+// @dev To get the level of an nft
+  function getLevel(uint _tokenId) public view returns(uint){
     require(_exists(_tokenId), "Non existent token");
-    return level[_account][_tokenId];
+    return level[_tokenId];
   } 
 
-// @Notice Check if an address is a DreadGang member
+// @dev Check if an address is a DreadGang member
   function isSquadMember(address _account) public view returns(bool){
     bool dadaG = squadMember[_account];
     return dadaG;
   } 
 
-// @Notice To level up an nft
+// @dev To level up an nft
   function levelUp(IPublicLock _levelLock, uint _tokenId) public payable onlyMember returns(uint) {
     require(_exists(_tokenId), "Nonexistent token");
+    require(msg.sender == ownerOf(_tokenId),"Not owner");
     IPublicLock levelLock =_levelLock;
     address levelLockAddress = address(levelLock);
-    require(allLevels[levelLockAddress], "Nonexistent level");
-    uint256 currentLevel = level[msg.sender][_tokenId];
+    uint256 currentLevel = level[_tokenId];
     uint256 levelUpDues = currentLevel * baseLevelUpFee / 100;
     uint256 baseLevelUpRewardFee = _setOptionId(currentLevel);
       
+    require(allLevels[levelLockAddress], "Nonexistent level");
     require(_hasValidKey(msg.sender, levelLock), "Invalid key");
     require(currentLevel >= levelData[levelLockAddress].minTargetLevel , "Meet the minimum level");
-    require(currentLevel <= levelData[levelLockAddress].minTargetLevel + 5 , "Within 5 levels of min Target level");
+    require(currentLevel <= levelData[levelLockAddress].minTargetLevel + 5 , "Within 5 levels");
     require(unlockedLevels[levelLockAddress][_tokenId] == false, "Already unlocked");
 
     if (msg.sender != owner()) {
       require(msg.sender != levelData[levelLockAddress].creator, "level created by you");
-      // (bool _sent, ) = msg.sender.call{value: cost}("");
-      // require(_sent, "Failed to send level Up fees");
     }
     if(baseLevelUpRewardFee != 3){
       (bool sent) = dgToken.transferFrom(msg.sender, address(this), levelUpDues);
       require(sent, "Insufficient DGTokens");
     }
-    uint newLevel = _levelUp(msg.sender, _tokenId);
+    uint newLevel = _levelUp(_tokenId);
     unlockedLevels[levelLockAddress][_tokenId] = true;
     dgToken.mintToken(msg.sender, newLevel * baseLevelUpReward);
 
@@ -193,7 +211,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
   }
 
 
-// @Notice To create a new level lock
+// @dev To create a new level lock
   function createLevelUpLock(IPublicLock _levelLock, uint _minTargetLevel)public payable onlyMember {
     IPublicLock levelToUnlock = _levelLock;
     address levelToUnlockAddr = address(levelToUnlock);
@@ -221,17 +239,17 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     emit CreateLevel(levelToUnlockAddr, _minTargetLevel, msg.sender);
   }
 
-// @Notice set the level to unlock data
+// @dev set the level to unlock data
   function _setLevelUnLockData(address _levelToUnlockAddr, bool _init, uint _minTargetLevel) private {
     levelData[_levelToUnlockAddr] = LevelUnlockData(_levelToUnlockAddr, _init, _minTargetLevel, msg.sender);
   }
 
-// @Notice select different options based on number input 
+// @dev select different options based on number input 
   function _setOptionId (uint _option) internal view returns(uint){
     uint8 _optionId;
-    if(_option >= baseLevelNoob){
+    if(_option >= baseLevelNoob && _option < baseLevelHustler){
         _optionId = 0;
-    } else if (_option >= baseLevelHustler) {
+    } else if (_option >= baseLevelHustler && _option < baseLevelOG) {
         _optionId = 1;
     } else if (_option >= baseLevelOG) {
         _optionId = 2;
@@ -271,6 +289,16 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     return hasKey;
   }
 
+  function grantKeys (
+    IPublicLock _publicLock, 
+    address[] calldata _accounts, 
+    uint[] calldata _expiration, 
+    address[] calldata _managers 
+  ) public onlyMember {
+    IPublicLock pubLock = _publicLock;
+    pubLock.grantKeys(_accounts,_expiration, _managers);
+  }
+
   // @notice Mint single nft
   function mintItem(address to, string memory uri) public returns (uint256) {
     uint256 supply = totalSupply();
@@ -291,24 +319,26 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
 
 
 // @notice Mint multiple nfts 
-  function multiMint(uint256 _mintAmount) public payable {
+  function multiMint(uint256 _mintAmount, uint256 _tokenIdForKey) public payable {
+    require(_exists(_tokenIdForKey), "Nonexistent token");
+    require(msg.sender == ownerOf(_tokenIdForKey),"Not owner");
     uint256 supply = totalSupply();
     require(!paused, "Contract paused");
-    require(_mintAmount > 1, "Enter amount greater than 1");
-    require(_mintAmount <= maxMintAmount, "Amount greater than allowed limit");
-    require(supply + _mintAmount <= maxSupply, "Minting over");
-    require(multiMintKeyUsed[address(multiMintLock)][msg.sender] == false, "You have already used this Multi mint key");
+    require(_mintAmount > 1, "Less than 1");
+    require(_mintAmount <= maxMintAmount, "Exceeded limit");
+    require(supply + _mintAmount <= maxSupply, "Over maxSupply");
+    require(multiMintKeyUsed[address(multiMintLock)][msg.sender] == false, "Already used");
 
 
     if (msg.sender != owner()) {
-      require(squadMember[msg.sender] == true, "Only members can mint a squad");
-      require(_hasValidMultiMintKey(msg.sender), "Need valid multi mint key to mint ");
+      require(getLevel(_tokenIdForKey) >= baseLevelHustler, "Hustler and over");
+      require(squadMember[msg.sender] == true, "Only members");
+      require(_hasValidMultiMintKey(msg.sender), "invalid key");
       (bool sent) = dgToken.transferFrom(msg.sender, address(this), 100);
       require(sent, "Insufficient DGTokens");
       multiMintKeyUsed[address(multiMintLock)][msg.sender] = true;
-      
     }
-   
+    
     for (uint256 i = 1; i <= _mintAmount; i++) {
       _tokenIdCounter.increment();
       uint256 tokenId = _tokenIdCounter.current();
@@ -316,7 +346,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
   }
 
-// @Dev Get the number of nfts by tokenIds owner has
+// @Notice Get the number of nfts by tokenIds an address has
   function walletOfOwner(address _owner)
     public
     view
@@ -337,7 +367,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     override(ERC721, ERC721URIStorage)
     returns (string memory)
   {
-    require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+    require(_exists(tokenId), "Nonexistent token");
     
     if(revealed == false) {
         return notRevealedUri;
@@ -378,10 +408,10 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     address hashlips = 0x943590A42C27D08e3744202c4Ae5eD55c2dE240D; 
     address buidlguidl = 0x97843608a00e2bbc75ab0C1911387E002565DEDE;
     
-    // This will pay HashLips 3% of the initial sale.
-    // You can remove this if you want, or keep it in to support HashLips and his channel.
-    // =============================================================================
     if (!initialRevenue){
+      // This will pay HashLips 3% of the initial sale.
+      // You can remove this if you want, or keep it in to support HashLips and his channel.
+      // =============================================================================
       (bool hl, ) = payable(hashlips).call{value: address(this).balance * 3 / 100}("");
       require(hl);
 
@@ -405,12 +435,9 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
 
       (bool o, ) = payable(owner()).call{value: address(this).balance}("");
       require(o);
-
     }
-    // =============================================================================
-    
-    // =============================================================================
   }
+
   function withdrawToken() public payable onlyOwner {
     uint256 dgTokenBalance = dgToken.balanceOf(address(this));
     if (!initialRevenue){

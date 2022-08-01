@@ -16,7 +16,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     from: deployer,
     args: [
       "DreadGang NFT",
-      "DADA",
+      "DREAD",
       "https://ipfs.io/ipfs/bafybeiblu3m2de4tytbopoyvuoismacxlzz3oduqtihzz67xu3exwtagpe/",
       "",
       "0xDc06312e21053dE7ecf7B00E3910f12BcC240BbF",

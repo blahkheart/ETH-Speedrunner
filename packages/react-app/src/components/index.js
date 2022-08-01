@@ -21,3 +21,4 @@ export { default as DGTokenBalance } from "./DGTokenBalance";
 export { default as CreateLock } from "./CreateLock";
 export { default as UnlockPaywall } from "./UnlockPaywall";
 export { default as UnlockVariables } from "./UnlockVariables";
+export { default as Level } from "./Level";
