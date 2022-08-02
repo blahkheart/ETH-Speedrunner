@@ -5,7 +5,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useUnlockState } from "../hooks"; 
 const { ethers } = require("ethers");
 
-export default function Level({ abis, userSigner, address, dreadGangAddress }) {
+export default function Level({ abis, userSigner, writeContracts, address, dreadGangAddress }) {
   const [name, setName] = useState();
   const [maxKeys, setMaxKeys] = useState();
   const [numberOfOwners, setNumberOfOwners] = useState();
@@ -34,7 +34,6 @@ export default function Level({ abis, userSigner, address, dreadGangAddress }) {
       setMaxKeys(_maxKeys.toNumber());
       setNumberOfOwners(_numberOfOwners.toNumber());
       setIsManager(_isManager);
-      // setHasValidKey(_hasValidKey);
       console.log("ooo", _isDreadGangLockManager);
       setIsDreadGangManager(_isDreadGangLockManager);
       setIsLoading(false);
@@ -55,7 +54,7 @@ export default function Level({ abis, userSigner, address, dreadGangAddress }) {
 
   const grantKeys = async (receivers, exp, managers) => {
     try {
-      const tx = await publicLock.grantKeys(receivers, exp, managers);
+      const tx = await writeContracts.DreadGang.grantKeys(id, receivers, exp, managers);
       console.log(tx);
     } catch (e) {
       console.log(e);
@@ -73,7 +72,7 @@ export default function Level({ abis, userSigner, address, dreadGangAddress }) {
     }
   };
   // console.log("DG.MM", isDreadGangManager);
-  
+
     // useEffect(() => {
     //     (() => {
             // const tokenOfOwnerByIndex = async () => {

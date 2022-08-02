@@ -51,7 +51,7 @@ const UnlockPaywall = ({ shape, size, publicLock, displayText, targetNetwork }) 
     "locks": locks,
     "icon": "https://unlock-protocol.com/static/images/svg/unlock-word-mark.svg",
     "callToAction": {
-      "default": "Please join the DG membership!"
+      "default": "Get a DG membership to unlock our Metaverse!"
     },
     "referrer": "0xCA7632327567796e51920F6b16373e92c7823854", // You can replace with your own address or leave this to support DreadGang :) it's up to you!!!
     "persistentCheckout": false,

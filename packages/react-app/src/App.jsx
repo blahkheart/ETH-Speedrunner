@@ -24,12 +24,11 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Level } from "./components";
+import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Level, UnlockPaywall } from "./components";
 import { Dashboard, Levels } from "./views";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
-import { useContractConfig } from "./hooks";
-// import Hints from "./Hints";
+import { useContractConfig, useUnlockState } from "./hooks";
 
 // nft metadata source
 import metadatajson from "./output/json/_metadata.json";
@@ -574,7 +573,7 @@ function App(props) {
     //   setPublicLockAddress(publicLockAddress);
     // }
     const unlockAddress = "0xd8c88be5e8eb88e38e6ff5ce186d764676012b0b"; //deployed Unlock Contract Rinkeby
-    const publicLockAddress = "0x2144842F37fa7a2F1e86bC77320FA348d0ab5981"; //random lock deployed on Rinkeby
+    const publicLockAddress = "0xDc06312e21053dE7ecf7B00E3910f12BcC240BbF"; //DreadGang Mint lock Rinkeby
     setDeployedUnlockAddress(unlockAddress);
     setPublicLockAddress(publicLockAddress);
   }, []);
@@ -603,6 +602,7 @@ function App(props) {
     };
     readyUnlock();
   }, [address, yourLocalBalance]);
+  const hasMintKey = useUnlockState(publicLock, address);
   ////////////// UNLOCK PROTOCOL: THE END /////////////
 
 
@@ -678,7 +678,7 @@ function App(props) {
           <Route exact path="/">
             <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <Button
-                disabled={minting}
+                disabled={minting || !hasMintKey}
                 shape="round"
                 size="large"
                 onClick={() => {
@@ -687,6 +687,16 @@ function App(props) {
               >
                 MINT NFT
               </Button>
+              {!hasMintKey ?
+                <UnlockPaywall
+                  shape="round"
+                  size="large"
+                  displayText="Get a membership key 🗝️ to unlock mint"
+                  targetNetwork={targetNetwork}
+                  publicLock={publicLock}
+                />
+                : ""
+              }
               {/* <Button
                 disabled={minting}
                 shape="round"
@@ -762,7 +772,6 @@ function App(props) {
               <Dashboard
                 yourCollectibles={yourCollectibles}
                 address={address}
-                mainnetProvider={mainnetProvider}
                 tx={tx}
                 tokenBalance={tokenBalance}
                 readContracts={readContracts}
@@ -797,6 +806,7 @@ function App(props) {
               userSigner={userSigner}
               address={address}
               dreadGangAddress={dreadGangAddress}
+              writeContracts={writeContracts}
             />
           </Route>
           <Route path="/debugcontracts">

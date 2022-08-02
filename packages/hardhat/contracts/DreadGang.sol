@@ -20,6 +20,7 @@
   // require user to be Hustler or higher to use multimint
   // change setBaseGatePass function parameters to uint256 from 32
   // grantKeys() function added
+  // Multiply token amount by 1e18 at levelUp() and multiMint()
 
   // TODO: (Optional) require multiMint lock to be set only once
   // test _setOptionId function
@@ -199,12 +200,12 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
       require(msg.sender != levelData[levelLockAddress].creator, "level created by you");
     }
     if(baseLevelUpRewardFee != 3){
-      (bool sent) = dgToken.transferFrom(msg.sender, address(this), levelUpDues);
+      (bool sent) = dgToken.transferFrom(msg.sender, address(this), levelUpDues * 1e18);
       require(sent, "Insufficient DGTokens");
     }
     uint newLevel = _levelUp(_tokenId);
     unlockedLevels[levelLockAddress][_tokenId] = true;
-    dgToken.mintToken(msg.sender, newLevel * baseLevelUpReward);
+    dgToken.mintToken(msg.sender, (newLevel * baseLevelUpReward) * 1e18);
 
     emit LevelUp(levelLockAddress, _tokenId, newLevel);
     return newLevel;
@@ -334,7 +335,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
       require(getLevel(_tokenIdForKey) >= baseLevelHustler, "Hustler and over");
       require(squadMember[msg.sender] == true, "Only members");
       require(_hasValidMultiMintKey(msg.sender), "invalid key");
-      (bool sent) = dgToken.transferFrom(msg.sender, address(this), 100);
+      (bool sent) = dgToken.transferFrom(msg.sender, address(this), 100 * 1e18);
       require(sent, "Insufficient DGTokens");
       multiMintKeyUsed[address(multiMintLock)][msg.sender] = true;
     }
@@ -415,13 +416,13 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
       (bool hl, ) = payable(hashlips).call{value: address(this).balance * 3 / 100}("");
       require(hl);
 
-      (bool pg, ) = payable(buidlguidl).call{value: address(this).balance * 3 / 100}("");
+      (bool pg, ) = payable(buidlguidl).call{value: address(this).balance * 13 / 100}("");
       require(pg);
 
       (bool v, ) = payable(vendor).call{value: address(this).balance * 44 / 100}("");
       require(v);
 
-      // This will payout the dev 50% of the initial Revenue.
+      // This will payout the dev the rest of the initial Revenue.
       (bool d, ) = payable(dev).call{value: address(this).balance}("");
       require(d);
 

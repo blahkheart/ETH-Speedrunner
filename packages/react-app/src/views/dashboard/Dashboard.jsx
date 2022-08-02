@@ -3,10 +3,11 @@ import "antd/dist/antd.css";
 import { DGTokenBalance } from "../../components";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 const { ethers } = require("ethers");
 
-const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContracts, writeContracts, tokenBalance }) => {
-  const routeHistory = useHistory();
+const Dashboard = ({ address, yourCollectibles, tx, readContracts, writeContracts, tokenBalance }) => {
+  // const routeHistory = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [nftData, setNftData] = useState({});
   const [levelLockAddress, setLevelLockAddress] = useState();
@@ -15,14 +16,68 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
   const [tokenId, setTokenId] = useState();
   const [tokenToLoadId, setTokenToLoadId] = useState();
   const [minTargetLevel, setMinTargetLevel] = useState();
-  const costToLevelUp = "0.005";
+  const [levelUpCost, setLevelUpCost] = useState({});
+  // const _costToLevelUp = "0.005";
   const { Meta } = Card;
+
+  useEffect(() => {
+    const loadLevelUpCost = async () => {
+      let _levelUpCost = {};
+      let _createLevelFee;
+      let _levelingUpFee;
+      if (tokenId) {
+        try {
+          const currentLevel = await readContracts.DreadGang.getLevel(tokenId);
+          const baseLevelUpfee = await readContracts.DreadGang.baseLevelUpFee();
+          _levelingUpFee = (currentLevel * baseLevelUpfee) / 100;
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      if (minTargetLevel) {
+        const noob = await readContracts.DreadGang.baseLevelNoob();
+        const hustler = await readContracts.DreadGang.baseLevelHustler();
+        const OG = await readContracts.DreadGang.baseLevelOG();
+        if (minTargetLevel >= noob && minTargetLevel <= hustler) {
+          _createLevelFee = await readContracts.DreadGang.gatePassNoob();
+        } else if (minTargetLevel >= hustler && minTargetLevel <= OG) {
+          _createLevelFee = await readContracts.DreadGang.gatePassHustler();
+        } else if (minTargetLevel >= OG) {
+          _createLevelFee = await readContracts.DreadGang.gatePassOG();
+        } else {
+          _createLevelFee = 0;
+        }
+      }
+      _levelUpCost = {
+        createLevelCost: _createLevelFee,
+        levelingUpCost: _levelingUpFee,
+      };
+      setLevelUpCost(_levelUpCost);
+    };
+    loadLevelUpCost();
+  }, [tokenId, minTargetLevel]);
+
+  // if (tokenId) {
+  //   console.log(levelUpCost);
+  // }
+  // const setOptionId = _option => {
+  //   if(_option >= baseLevelNoob && _option < baseLevelHustler){
+  //       _optionId = 0;
+  //   } else if (_option >= baseLevelHustler && _option < baseLevelOG) {
+  //       _optionId = 1;
+  //   } else if (_option >= baseLevelOG) {
+  //       _optionId = 2;
+  //   } else {
+  //     _optionId = 3;
+  //   }
+  //   return _optionId;
+  // }
 
   const loadNFTData = async () => {
     try {
       let nftData;
       let nftLevel;
-      const _level = await readContracts.DreadGang.getLevel(address, tokenToLoadId);
+      const _level = await readContracts.DreadGang.getLevel(tokenToLoadId);
       if (_level) {
         nftLevel = _level.toNumber();
         if (yourCollectibles && yourCollectibles.length) {
@@ -123,7 +178,8 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
                   loading={false}
                   onClick={async () => {
                       setLevelingUp(true);
-                      await tx(writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, { value: ethers.utils.parseEther(costToLevelUp) }));
+                      // await tx(writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, { value: ethers.utils.parseEther(levelUpCost.createLevelCost.toNumber()) }));
+                      await tx(writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, { value: levelUpCost.createLevelCost }));
                       setLevelingUp(false);
                   }}
                   disabled={false}
@@ -158,7 +214,6 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
                       value={tokenId}
                       onChange={e => {
                           const newValue = e.target.value;
-                          console.log("New lv", newValue);
                           setTokenId(newValue);
                       }}
                   />
@@ -170,7 +225,8 @@ const Dashboard = ({ address, mainnetProvider, yourCollectibles, tx, readContrac
                       loading={levelingUp}
                       onClick={async () => {
                           setLevelingUp(true);
-                          await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId, { value: ethers.utils.parseEther(costToLevelUp)}));
+                          // await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId, { value: ethers.utils.parseEther(_costToLevelUp)}));
+                          await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId));
                           setLevelingUp(false);
                       }}
                       disabled={false}
