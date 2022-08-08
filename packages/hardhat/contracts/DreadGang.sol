@@ -295,7 +295,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     address[] calldata _accounts, 
     uint[] calldata _expiration, 
     address[] calldata _managers 
-  ) public onlyMember {
+  ) public onlyMember returns (uint[] memory) {
     IPublicLock pubLock = _publicLock;
     pubLock.grantKeys(_accounts,_expiration, _managers);
   }

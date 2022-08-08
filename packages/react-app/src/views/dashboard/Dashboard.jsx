@@ -2,13 +2,13 @@ import { Button, Card, Col, Space, Spin, Input, Row, Divider } from "antd";
 import "antd/dist/antd.css";
 import { DGTokenBalance } from "../../components";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 const { ethers } = require("ethers");
 
 const Dashboard = ({ address, yourCollectibles, tx, readContracts, writeContracts, tokenBalance }) => {
-  // const routeHistory = useHistory();
   const [isLoading, setIsLoading] = useState(false);
+  const [creatingLevel, setCreatingLevel] = useState(false);
   const [nftData, setNftData] = useState({});
   const [levelLockAddress, setLevelLockAddress] = useState();
   const [levelUpAddress, setLevelUpAddress] = useState();
@@ -17,7 +17,7 @@ const Dashboard = ({ address, yourCollectibles, tx, readContracts, writeContract
   const [tokenToLoadId, setTokenToLoadId] = useState();
   const [minTargetLevel, setMinTargetLevel] = useState();
   const [levelUpCost, setLevelUpCost] = useState({});
-  // const _costToLevelUp = "0.005";
+
   const { Meta } = Card;
 
   useEffect(() => {
@@ -57,22 +57,6 @@ const Dashboard = ({ address, yourCollectibles, tx, readContracts, writeContract
     loadLevelUpCost();
   }, [tokenId, minTargetLevel]);
 
-  // if (tokenId) {
-  //   console.log(levelUpCost);
-  // }
-  // const setOptionId = _option => {
-  //   if(_option >= baseLevelNoob && _option < baseLevelHustler){
-  //       _optionId = 0;
-  //   } else if (_option >= baseLevelHustler && _option < baseLevelOG) {
-  //       _optionId = 1;
-  //   } else if (_option >= baseLevelOG) {
-  //       _optionId = 2;
-  //   } else {
-  //     _optionId = 3;
-  //   }
-  //   return _optionId;
-  // }
-
   const loadNFTData = async () => {
     try {
       let nftData;
@@ -96,98 +80,107 @@ const Dashboard = ({ address, yourCollectibles, tx, readContracts, writeContract
   };
 
   const nftPreview = (
-      <>
-        {/* <Row>
-          <Col>     */}
-            <div style={{ padding: 8, marginTop: 32, width: 450, margin: "auto" }}>
-              <Card title="Street Cred">
-                <div style={{ padding: 8, display: "flex" }}>
-                <Input
-                    style={{ textAlign: "center", marginBottom: 15 }}
-                    placeholder={"Enter token Id"}
-                    type="number"
-                    value={tokenToLoadId}
-                    onChange={e => {
-                        const newValue = e.target.value;
-                        setTokenToLoadId(newValue);
-                    }}
+    <>
+      <div style={{ padding: 8, marginTop: 32, width: 450, margin: "auto" }}>
+        <Card title="Street Cred">
+          <div style={{ padding: 8, display: "flex" }}>
+            <Input
+              style={{ textAlign: "center", marginBottom: 15 }}
+              placeholder={"Enter token Id"}
+              type="number"
+              value={tokenToLoadId}
+              onChange={e => {
+                const newValue = e.target.value;
+                setTokenToLoadId(newValue);
+              }}
+            />
+            <Button
+              type={"secondary"}
+              loading={isLoading}
+              onClick={async () => {
+                setIsLoading(true);
+                loadNFTData();
+                setIsLoading(false);
+              }}
+              disabled={isLoading}
+            >
+              Load
+            </Button>
+          </div>
+          <div style={{ padding: 8, display: "flex", justifyContent: "center" }}>
+            {nftData ? (
+              <Card
+                hoverable
+                style={{
+                  width: 240,
+                }}
+                cover={
+                  <img
+                    alt="Load NFT Info ☝️"
+                    src={nftData ? nftData.image : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"}
+                  />
+                }
+              >
+                <Meta
+                  title={nftData && nftData.name ? nftData.name : "DreadGang #"}
+                  description={nftData && nftData.nftLevel >= 0 ? `Level: ${nftData.nftLevel}` : <Spin size="small" />}
                 />
-                <Button
-                    type={"secondary"}
-                    loading={isLoading}
-                    onClick={async () => {
-                        setIsLoading(true);
-                        loadNFTData();
-                        setIsLoading(false);
-                    }}
-                    disabled={isLoading}
-                >
-                    Load
-                </Button>
-                </div>
-                <div style={{ padding: 8, display: "flex", justifyContent: "center" }}>
-                  {nftData ? (
-                    <Card
-                      hoverable
-                      style={{
-                        width: 240,
-                      }}
-                      cover={<img alt="Load NFT Info ☝️" src={nftData ? nftData.image : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"} />}
-                    >
-                      <Meta title={nftData && nftData.name ? nftData.name : "DreadGang #"} description={nftData && nftData.nftLevel >= 0 ? `Level: ${nftData.nftLevel}` : <Spin size="small" />} />
-                    </Card>) : (
-                    <Space size="middle">
-                        <Spin />
-                    </Space>
-                  )}
-                </div>
               </Card>
-            </div>
-          {/* </Col>
-        </Row> */}
-      </>
+            ) : (
+              <Space size="middle">
+                <Spin />
+              </Space>
+            )}
+          </div>
+        </Card>
+      </div>
+    </>
   );
 
   const createLevel = (
     <>
       <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-          <Card title="Create level">
-              <div style={{ padding: 8 }}>
-                  <Input
-                    style={{ textAlign: "center", marginBottom: 15 }}
-                    placeholder={"Lock address"}
-                    value={levelLockAddress}
-                    onChange={e => {
-                      const newValue = e.target.value;
-                      setLevelLockAddress(newValue);
-                    }}
-                  />
-                  <Input
-                    style={{ textAlign: "center" }}
-                    placeholder={"Minimum target level"}
-                    value={minTargetLevel}
-                    onChange={e => {
-                      const newValue = e.target.value;
-                      setMinTargetLevel(newValue);
-                    }}
-                  />
-              </div>
-              <div style={{ padding: 8 }}>
-              <Button
-                  type={"danger"}
-                  loading={false}
-                  onClick={async () => {
-                      setLevelingUp(true);
-                      // await tx(writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, { value: ethers.utils.parseEther(levelUpCost.createLevelCost.toNumber()) }));
-                      await tx(writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, { value: levelUpCost.createLevelCost }));
-                      setLevelingUp(false);
-                  }}
-                  disabled={false}
-              >
-                  Create New Level
-              </Button>
-              </div>
-          </Card>
+        <Card title="Create level">
+          <div style={{ padding: 8 }}>
+            <Input
+              style={{ textAlign: "center", marginBottom: 15 }}
+              placeholder={"Lock address"}
+              value={levelLockAddress}
+              onChange={e => {
+                const newValue = e.target.value;
+                setLevelLockAddress(newValue);
+              }}
+            />
+            <Input
+              style={{ textAlign: "center" }}
+              placeholder={"Minimum target level"}
+              value={minTargetLevel}
+              onChange={e => {
+                const newValue = e.target.value;
+                setMinTargetLevel(newValue);
+              }}
+            />
+          </div>
+          <div style={{ padding: 8 }}>
+            <Button
+              type={"danger"}
+              loading={creatingLevel}
+              onClick={async () => {
+                setCreatingLevel(true);
+                // await tx(writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, { value: ethers.utils.parseEther(levelUpCost.createLevelCost.toNumber()) }));
+                await tx(
+                  writeContracts.DreadGang.createLevelUpLock(levelLockAddress, minTargetLevel, {
+                    value: levelUpCost.createLevelCost,
+                  }),
+                );
+                setCreatingLevel(false);
+              }}
+              disabled={false}
+            >
+              Create New Level
+            </Button>
+          </div>
+        </Card>
       </div>
     </>
   );
@@ -195,46 +188,49 @@ const Dashboard = ({ address, yourCollectibles, tx, readContracts, writeContract
   const levelUp = (
     <>
       <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-          <Card title="Level Up">
-              <div style={{ padding: 8 }}>
-          
-                  <Input
-                      style={{ textAlign: "center", marginBottom: 15 }}
-                      placeholder={"Level lock address"}
-                      value={levelUpAddress}
-                      onChange={e => {
-                        const newValue = e.target.value;
-                        setLevelUpAddress(newValue);
-                      }}
-                  />
-      
-                  <Input
-                      style={{ textAlign: "center" }}
-                      placeholder={"Token Id"}
-                      value={tokenId}
-                      onChange={e => {
-                          const newValue = e.target.value;
-                          setTokenId(newValue);
-                      }}
-                  />
-              </div>
-              
-              <div style={{ padding: 8 }}>
-                  <Button
-                      type={"primary"}
-                      loading={levelingUp}
-                      onClick={async () => {
-                          setLevelingUp(true);
-                          // await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId, { value: ethers.utils.parseEther(_costToLevelUp)}));
-                          await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId));
-                          setLevelingUp(false);
-                      }}
-                      disabled={false}
-                  >
-                      Level Up
-                  </Button>
-              </div>
-          </Card>
+        <Card title="Level Up">
+          <div style={{ padding: 8 }}>
+            <Input
+              style={{ textAlign: "center", marginBottom: 15 }}
+              placeholder={"Level lock address"}
+              value={levelUpAddress}
+              onChange={e => {
+                const newValue = e.target.value;
+                setLevelUpAddress(newValue);
+              }}
+            />
+
+            <Input
+              style={{ textAlign: "center" }}
+              placeholder={"Token Id"}
+              value={tokenId}
+              onChange={e => {
+                const newValue = e.target.value;
+                setTokenId(newValue);
+              }}
+            />
+          </div>
+
+          <div style={{ padding: 8 }}>
+            <Button
+              type={"primary"}
+              loading={levelingUp}
+              onClick={async () => {
+                setLevelingUp(true);
+                let currentLevel = await readContracts.DreadGang.getLevel(tokenId);
+                const dreadGangAddress = await readContracts.DreadGang.address;
+                const baseLevelUpFee = await readContracts.DreadGang.baseLevelUpFee();
+                const levelUpDues = (currentLevel * baseLevelUpFee) / 100 + 1;
+                await tx(writeContracts.DGToken.approve(dreadGangAddress, Math.round(levelUpDues)));
+                await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId));
+                setLevelingUp(false);
+              }}
+              disabled={false}
+            >
+              Level Up
+            </Button>
+          </div>
+        </Card>
       </div>
     </>
   );

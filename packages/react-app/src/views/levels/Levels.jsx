@@ -31,11 +31,6 @@ export default function Levels({ mainnetProvider, createLevelEvents }) {
           );
         }}
       />
-      {/* <Switch>
-        <Route path={`${path}/:id`}>
-          <Level />
-        </Route>
-      </Switch> */}
     </div>
   );
 }

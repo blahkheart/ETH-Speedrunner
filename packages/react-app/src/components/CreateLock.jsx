@@ -28,7 +28,7 @@ const CreateLock = ({ price, unlock }) => {
   const [newLockAddress, setNewLockAddress] = useState();
   const [useETH, setUseETH] = useState(false);
   const [useUnlimitedDate, setUseUnlimitedDate] = useState(false);
-  
+
   const zeroAddress = "0x0000000000000000000000000000000000000000";
 
   const toggleUseETH = () => {
@@ -37,7 +37,7 @@ const CreateLock = ({ price, unlock }) => {
   const toggleUseUnlimitedDate = () => {
     setUseUnlimitedDate(!useUnlimitedDate);
   };
- 
+
   const createLock = (
     <>
       <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
@@ -84,7 +84,7 @@ const CreateLock = ({ price, unlock }) => {
             />
             <EtherInput
               autofocus
-              price={price}
+              // price={price}
               value={keyPrice}
               placeholder="Enter key price"
               onChange={value => {
@@ -102,7 +102,9 @@ const CreateLock = ({ price, unlock }) => {
                   let startDate = moment().startOf('day').valueOf();
                   let expDate = chosenDate - startDate;
                   let expDateInSec = expDate / 1000;
-                  setExpirationDuration(Math.round(expDateInSec));
+                  setExpirationDuration(Math.floor(expDateInSec));
+                  // console.log("time test::", Math.floor(moment.duration(expDate).asDays()));
+                  // setExpirationDuration(Math.floor(moment.duration(expDate).asDays()));
                 }}
               />
               <Checkbox onChange={e => {
@@ -132,7 +134,7 @@ const CreateLock = ({ price, unlock }) => {
                     );
                     const tx = await result.wait();
                     const event = tx.events;
-                    const newLockAddress = event[6].args[1];
+                    const newLockAddress = event[0].address;
                     setLockTxHash(result.hash);
                     setNewLockAddress(newLockAddress);
                 } catch (e) {

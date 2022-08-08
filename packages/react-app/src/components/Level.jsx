@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Spin } from "antd";
+import { Button, Spin, Input } from "antd";
 // import { Button } from "antd";
 import { useParams, useHistory } from "react-router-dom";
-import { useUnlockState } from "../hooks"; 
+import { useUnlockState } from "../hooks";
 const { ethers } = require("ethers");
+import { MultiAddressInput } from "../components/";
 
 export default function Level({ abis, userSigner, writeContracts, address, dreadGangAddress }) {
   const [name, setName] = useState();
@@ -12,6 +13,7 @@ export default function Level({ abis, userSigner, writeContracts, address, dread
   const [isManager, setIsManager] = useState();
   const [isLoading, setIsLoading] = useState();
   const [isDreadGangManager, setIsDreadGangManager] = useState();
+  // const [toAddress, setToAddress] = useState();
   // const [keyGranterRole, setKeyGranterRole] = useState();
   // const [lockManagerRole, setLockManagerRole] = useState();
 
@@ -22,7 +24,7 @@ export default function Level({ abis, userSigner, writeContracts, address, dread
 
   useEffect(() => {
     setIsLoading(true);
-    let _name, _maxKeys, _numberOfOwners, _isManager, _isDreadGangLockManager; 
+    let _name, _maxKeys, _numberOfOwners, _isManager, _isDreadGangLockManager;
     const loadLevelData = async () => {
       _name = await publicLock.name();
       _maxKeys = await publicLock.maxNumberOfKeys();
@@ -34,23 +36,11 @@ export default function Level({ abis, userSigner, writeContracts, address, dread
       setMaxKeys(_maxKeys.toNumber());
       setNumberOfOwners(_numberOfOwners.toNumber());
       setIsManager(_isManager);
-      console.log("ooo", _isDreadGangLockManager);
       setIsDreadGangManager(_isDreadGangLockManager);
       setIsLoading(false);
     };
     loadLevelData();
   }, [id, numberOfOwners, address]);
-  console.log(publicLock);
-
-  // useEffect(() => {
-  //   const getRoles = async () => {
-  //     const KEY_GRANTER_ROLE = await publicLock.KEY_GRANTER_ROLE();
-  //     const LOCK_MANAGER_ROLE = await publicLock.LOCK_MANAGER_ROLE();
-  //     setKeyGranterRole(KEY_GRANTER_ROLE);
-  //     setLockManagerRole(LOCK_MANAGER_ROLE);
-  //   };
-  //   getRoles();
-  // }, []);
 
   const grantKeys = async (receivers, exp, managers) => {
     try {
@@ -64,66 +54,56 @@ export default function Level({ abis, userSigner, writeContracts, address, dread
   const addLockManager = async () => {
     try {
       if (dreadGangAddress) {
-        const tx = await publicLock.addLockManager(dreadGangAddress);
-        console.log(tx);
+        const lockManagerTx = await publicLock.addLockManager(dreadGangAddress);
+        // const keyGranterTx = await publicLock.addKeyGranter(dreadGangAddress);
+        console.log("lockManagerTX: ", lockManagerTx);
       }
     } catch (e) {
       console.log(e);
     }
   };
-  // console.log("DG.MM", isDreadGangManager);
 
-    // useEffect(() => {
-    //     (() => {
-            // const tokenOfOwnerByIndex = async () => {
-            //     let x = [];
-            //     let y = await publicLock.balanceOf(address);
-            //     for (let i = 0; i < y.toNumber(); i++){
-            //         x[i] = await publicLock.tokenOfOwnerByIndex(address, i);
-
-            //         return x[i].toNumber();
-            //     }
-            //     // return x;
-            // }
-            // tokenOfOwnerByIndex();
-            // console.log("DDD", tokenOfOwnerByIndex());
-            
-            // const keyExpirationTimestampFor = async () => {
-            //     let x = await publicLock.keyExpirationTimestampFor(tokenOfOwnerByIndex());
-            //     console.log("XXXX", x.toNumber());
-            // }
-            // keyExpirationTimestampFor();
-    //     })();
-    // }, [])
-
-  return (
-    isLoading ? <Spin style={{marginTop: 30}}></Spin> :
+  return isLoading ? (
+    <Spin style={{ marginTop: 30 }}></Spin>
+  ) : (
     <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-        <Button
-          type="link"
-          onClick={() => {
-            history.push("/levels");
-        }}>
-          Back
-        </Button>
-        <h3>{name}</h3>
-        <p>Max squad members: { maxKeys}</p>
-        <p>Squad members: {numberOfOwners} / {maxKeys}</p>
-        <Button
-          color="primary"
-          disabled={hasValidKey || !isDreadGangManager}
-          onClick={() => {
-            let addr = [];
-            addr.push(address);
-            let exp = 24 * 60 * 60; //24 hours
-            grantKeys(addr, [exp],[dreadGangAddress])   
+      <Button
+        type="link"
+        onClick={() => {
+          history.push("/levels");
+        }}
+      >
+        Back
+      </Button>
+      <h3>{name}</h3>
+      <p>Max squad members: {maxKeys}</p>
+      <p>
+        Squad members: {numberOfOwners} / {maxKeys}
+      </p>
+      {/* <Input
+          placeholder="Enter receiver address"
+          style={{ marginBottom: 15 }}
+          value={toAddress}
+          onChange={e => {
+            const newValue = e.target.value;
+            setToAddress(newValue);
           }}
-        >{!hasValidKey?"Claim spot": "Key owned"}</Button>
-        {
-          isDreadGangManager === false && isManager
-          ? <Button onClick={addLockManager}>Make DreadGang Manager</Button>
-          : ""
-        }
+        /> */}
+      <Button
+        color="primary"
+        disabled={hasValidKey || !isDreadGangManager}
+        onClick={() => {
+          let exp = BigInt("115792089237316195423570985008687907853269984665640564039457584007913129639935");
+          grantKeys([address], [exp], [dreadGangAddress]);
+        }}
+      >
+        {!hasValidKey ? "Claim spot" : "Key owned"}
+      </Button>
+      {isDreadGangManager === false && isManager ? (
+        <Button onClick={addLockManager}>Make DreadGang Manager</Button>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

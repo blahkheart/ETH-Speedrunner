@@ -24,7 +24,21 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Level, UnlockPaywall } from "./components";
+import {
+  Account,
+  Address,
+  AddressInput,
+  Contract,
+  Faucet,
+  GasGauge,
+  Header,
+  Ramp,
+  ThemeSwitch,
+  Level,
+  UnlockPaywall,
+  CreateLock,
+  GrantKey,
+} from "./components";
 import { Dashboard, Levels } from "./views";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
@@ -279,6 +293,18 @@ function App(props) {
 
   // DreadGang Contract Address
   const dreadGangAddress = readContracts && readContracts.DreadGang && readContracts.DreadGang.address;
+  const [isSquadMember, setIsSquadMember] = useState();
+  useEffect(() => {
+    const _isSquadMember = async () => {
+      try {
+        const isMember = await readContracts.DreadGang.isSquadMember(address);
+        setIsSquadMember(isMember);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    _isSquadMember();
+  }, [address, isSquadMember]);
 
   // DGToken Address
   const dgTokenAddress = readContracts && readContracts.DGToken && readContracts.DGToken.address;
@@ -521,12 +547,12 @@ function App(props) {
     );
   }
 
-  const [yourJSON, setYourJSON] = useState(STARTING_JSON);
-  const [sending, setSending] = useState();
-  const [ipfsHash, setIpfsHash] = useState();
-  const [ipfsDownHash, setIpfsDownHash] = useState();
-  const [downloading, setDownloading] = useState();
-  const [ipfsContent, setIpfsContent] = useState();
+  // const [yourJSON, setYourJSON] = useState(STARTING_JSON);
+  // const [sending, setSending] = useState();
+  // const [ipfsHash, setIpfsHash] = useState();
+  // const [ipfsDownHash, setIpfsDownHash] = useState();
+  // const [downloading, setDownloading] = useState();
+  // const [ipfsContent, setIpfsContent] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
@@ -541,9 +567,7 @@ function App(props) {
     setCount(count + 1);
     console.log("Uploaded Hash: ", uploaded);
     const result = tx(
-      writeContracts &&
-        writeContracts.DreadGang &&
-        writeContracts.DreadGang.mintItem(address, uploaded.path),
+      writeContracts && writeContracts.DreadGang && writeContracts.DreadGang.mintItem(address, uploaded.path),
       update => {
         console.log("📡 Transaction Update:", update);
         if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -567,8 +591,8 @@ function App(props) {
   // const publicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
   useEffect(() => {
     // if (unlockData && publicLockData) {
-      // const unlockAddress = unlockData.unlockAddress;
-      // const publicLockAddress = publicLockData.publicLockAddress;
+    // const unlockAddress = unlockData.unlockAddress;
+    // const publicLockAddress = publicLockData.publicLockAddress;
     //   setDeployedUnlockAddress(unlockAddress);
     //   setPublicLockAddress(publicLockAddress);
     // }
@@ -589,10 +613,10 @@ function App(props) {
       let publicLockContract;
       try {
         if (deployedUnlockAddress) {
-          unlockContract = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner)
+          unlockContract = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner);
         }
         if (publicLockAddress) {
-          publicLockContract = new ethers.Contract(publicLockAddress, abis.PublicLockV10.abi, userSigner)
+          publicLockContract = new ethers.Contract(publicLockAddress, abis.PublicLockV10.abi, userSigner);
         }
       } catch (e) {
         console.log(e);
@@ -604,7 +628,6 @@ function App(props) {
   }, [address, yourLocalBalance]);
   const hasMintKey = useUnlockState(publicLock, address);
   ////////////// UNLOCK PROTOCOL: THE END /////////////
-
 
   return (
     <div className="App">
@@ -620,7 +643,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourCollectibles
+              Home
             </Link>
           </Menu.Item>
           <Menu.Item key="/dashboard">
@@ -676,18 +699,23 @@ function App(props) {
         </Menu>
         <Switch>
           <Route exact path="/">
-            <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <Button
-                disabled={minting || !hasMintKey}
-                shape="round"
-                size="large"
-                onClick={() => {
-                  mintItem();
-                }}
-              >
-                MINT NFT
-              </Button>
-              {!hasMintKey ?
+            <div style={{ width: 850, margin: "auto", marginTop: 32 }}>
+              {!isSquadMember ? (
+                <Button
+                  disabled={minting || !hasMintKey}
+                  style={{ marginBottom: 8 }}
+                  shape="round"
+                  size="large"
+                  onClick={() => {
+                    mintItem();
+                  }}
+                >
+                  MINT NFT
+                </Button>
+              ) : (
+                ""
+              )}
+              {!hasMintKey ? (
                 <UnlockPaywall
                   shape="round"
                   size="large"
@@ -695,23 +723,13 @@ function App(props) {
                   targetNetwork={targetNetwork}
                   publicLock={publicLock}
                 />
-                : ""
-              }
-              {/* <Button
-                disabled={minting}
-                shape="round"
-                size="large"
-                onClick={() => {
-                  console.log("Button clicked!");
-                }}
-                style={{ marginLeft: 15, marginRight: 15 }}
-              >
-                BECOME A MEMBER
-              </Button> */}
+              ) : (
+                ""
+              )}
             </div>
             <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
-                bordered 
+                bordered
                 dataSource={yourCollectibles}
                 renderItem={item => {
                   const id = item.id.toNumber();
@@ -727,7 +745,7 @@ function App(props) {
                         <div style={{ marginBottom: 25 }}>
                           <img src={item.image} style={{ maxWidth: 250 }} />
                         </div>
-                        <div >{item.description}</div>
+                        <div>{item.description}</div>
                       </Card>
 
                       <div>
@@ -750,7 +768,7 @@ function App(props) {
                             setTransferToAddresses({ ...transferToAddresses, ...update });
                           }}
                         />
-                        <br/>
+                        <br />
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
@@ -764,6 +782,10 @@ function App(props) {
                   );
                 }}
               />
+            </div>
+            <div style={{ width: 850, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <CreateLock price={price} unlock={unlock} />
+              <GrantKey abis={abis} userSigner={userSigner} address={address} />
             </div>
           </Route>
 

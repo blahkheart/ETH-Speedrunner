@@ -22,3 +22,5 @@ export { default as CreateLock } from "./CreateLock";
 export { default as UnlockPaywall } from "./UnlockPaywall";
 export { default as UnlockVariables } from "./UnlockVariables";
 export { default as Level } from "./Level";
+export { default as MultiAddressInput } from "./MultiAddressInput";
+export { default as GrantKey } from "./GrantKey";
