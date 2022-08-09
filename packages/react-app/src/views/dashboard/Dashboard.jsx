@@ -218,10 +218,17 @@ const Dashboard = ({ address, yourCollectibles, tx, readContracts, writeContract
               onClick={async () => {
                 setLevelingUp(true);
                 let currentLevel = await readContracts.DreadGang.getLevel(tokenId);
-                const dreadGangAddress = await readContracts.DreadGang.address;
-                const baseLevelUpFee = await readContracts.DreadGang.baseLevelUpFee();
-                const levelUpDues = (currentLevel * baseLevelUpFee) / 100 + 1;
-                await tx(writeContracts.DGToken.approve(dreadGangAddress, Math.round(levelUpDues)));
+                let baseLevelNoob = await readContracts.DreadGang.baseLevelNoob();
+                if (currentLevel >= baseLevelNoob) {
+                  const dreadGangAddress = await readContracts.DreadGang.address;
+                  const baseLevelUpFee = await readContracts.DreadGang.baseLevelUpFee();
+                  const levelUpDues = JSON.stringify((currentLevel * baseLevelUpFee) / 100 + 1);
+                  const levelUpDuesinWei = ethers.utils.parseEther(levelUpDues);
+                  const allowance = await readContracts.DGToken.allowance(address, dreadGangAddress);
+                  if (allowance < levelUpDuesinWei) {
+                    await tx(writeContracts.DGToken.approve(dreadGangAddress, levelUpDuesinWei));
+                  }
+                }
                 await tx(writeContracts.DreadGang.levelUp(levelUpAddress, tokenId));
                 setLevelingUp(false);
               }}
