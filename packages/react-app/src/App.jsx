@@ -40,16 +40,24 @@ import {
   GrantKey,
 } from "./components";
 import { Dashboard, Levels } from "./views";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS, INFURA_IPFS_ID, INFURA_IPFS_SECRET } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig, useUnlockState } from "./hooks";
-
+import { Buffer } from "buffer";
 // nft metadata source
 import metadatajson from "./output/json/_metadata.json";
 
 const { BufferList } = require("bl");
 const ipfsAPI = require("ipfs-http-client");
-const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+const auth = "Basic " + Buffer.from(INFURA_IPFS_ID + ":" + INFURA_IPFS_SECRET).toString("base64");
+const ipfs = ipfsAPI({
+  host: "ipfs.infura.io",
+  port: "5001",
+  protocol: "https",
+  headers: {
+    authorization: auth,
+  },
+});
 // unlock contract abis
 const abis = require("@unlock-protocol/contracts");
 const { ethers } = require("ethers");
@@ -305,7 +313,7 @@ function App(props) {
     };
     _isSquadMember();
   }, [address, isSquadMember]);
-
+  console.log("XYXX", isSquadMember);
   // DGToken Address
   const dgTokenAddress = readContracts && readContracts.DGToken && readContracts.DGToken.address;
 
@@ -627,6 +635,7 @@ function App(props) {
     readyUnlock();
   }, [address, yourLocalBalance]);
   const hasMintKey = useUnlockState(publicLock, address);
+  // console.log(address, " has mint key:", hasMintKey);
   ////////////// UNLOCK PROTOCOL: THE END /////////////
 
   return (
