@@ -22,8 +22,11 @@
   // grantKeys() function added
   // Multiply token amount by 1e18 at levelUp() and multiMint()
 
-  // TODO: (Optional) require multiMint lock to be set only once
+  // TODO: 
+  // (Optional) require multiMint lock to be set only once
   // test _setOptionId function
+  // Require multiplier value change > 0
+  // Set NFT leveling up limit and DGToken minting at max NFT Level
 
 pragma solidity ^0.8.2;
 
