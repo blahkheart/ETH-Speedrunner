@@ -82,8 +82,7 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 // const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-
+const targetNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
@@ -313,7 +312,6 @@ function App(props) {
     };
     _isSquadMember();
   }, [address, isSquadMember]);
-  console.log("XYXX", isSquadMember);
   // DGToken Address
   const dgTokenAddress = readContracts && readContracts.DGToken && readContracts.DGToken.address;
 
@@ -604,8 +602,8 @@ function App(props) {
     //   setDeployedUnlockAddress(unlockAddress);
     //   setPublicLockAddress(publicLockAddress);
     // }
-    const unlockAddress = "0xd8c88be5e8eb88e38e6ff5ce186d764676012b0b"; //deployed Unlock Contract Rinkeby
-    const publicLockAddress = "0xDc06312e21053dE7ecf7B00E3910f12BcC240BbF"; //DreadGang Mint lock Rinkeby
+    const unlockAddress = "0x627118a4fB747016911e5cDA82e2E77C531e8206"; //deployed Unlock Contract Goerli
+    const publicLockAddress = "0x4604392da245ada386bf90118ace7e787e2c221f"; //Lock on Goerli
     setDeployedUnlockAddress(unlockAddress);
     setPublicLockAddress(publicLockAddress);
   }, []);

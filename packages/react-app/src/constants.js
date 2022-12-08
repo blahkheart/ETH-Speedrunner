@@ -1,5 +1,5 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+export const INFURA_ID = "585fc04a93b24cce94232d54e2193bf8";
 
 // MY INFURA_IPFS_ID & INFURA_IPFS_SECRET, SWAP IN YOURS FROM https://infura.io/dashboard/
 export const INFURA_IPFS_ID = "2E0QDmb4skrBDZx2T2BEQTZht0k";
@@ -26,30 +26,30 @@ export const NETWORKS = {
     rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
     blockExplorer: "https://etherscan.io/",
   },
-  kovan: {
-    name: "kovan",
-    color: "#7003DD",
-    chainId: 42,
-    rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
-    blockExplorer: "https://kovan.etherscan.io/",
-    faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
-  },
-  rinkeby: {
-    name: "rinkeby",
-    color: "#e0d068",
-    chainId: 4,
-    rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
-    faucet: "https://faucet.rinkeby.io/",
-    blockExplorer: "https://rinkeby.etherscan.io/",
-  },
-  ropsten: {
-    name: "ropsten",
-    color: "#F60D09",
-    chainId: 3,
-    faucet: "https://faucet.ropsten.be/",
-    blockExplorer: "https://ropsten.etherscan.io/",
-    rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
-  },
+  // kovan: {
+  //   name: "kovan",
+  //   color: "#7003DD",
+  //   chainId: 42,
+  //   rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
+  //   blockExplorer: "https://kovan.etherscan.io/",
+  //   faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
+  // },
+  // rinkeby: {
+  //   name: "rinkeby",
+  //   color: "#e0d068",
+  //   chainId: 4,
+  //   rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
+  //   faucet: "https://faucet.rinkeby.io/",
+  //   blockExplorer: "https://rinkeby.etherscan.io/",
+  // },
+  // ropsten: {
+  //   name: "ropsten",
+  //   color: "#F60D09",
+  //   chainId: 3,
+  //   faucet: "https://faucet.ropsten.be/",
+  //   blockExplorer: "https://ropsten.etherscan.io/",
+  //   rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
+  // },
   goerli: {
     name: "goerli",
     color: "#0975F6",

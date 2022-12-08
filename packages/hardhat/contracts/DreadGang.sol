@@ -196,7 +196,7 @@ contract DreadGang is ERC721Enumerable, ERC721URIStorage, Ownable {
     require(allLevels[levelLockAddress], "Nonexistent level");
     require(_hasValidKey(msg.sender, levelLock), "Invalid key");
     require(currentLevel >= levelData[levelLockAddress].minTargetLevel , "Meet the minimum level");
-    require(currentLevel <= levelData[levelLockAddress].minTargetLevel + 5 , "Within 5 levels");
+    require(currentLevel <= levelData[levelLockAddress].minTargetLevel + 5 , "Not within 5 levels");
     require(unlockedLevels[levelLockAddress][_tokenId] == false, "Already unlocked");
 
     if (msg.sender != owner()) {
