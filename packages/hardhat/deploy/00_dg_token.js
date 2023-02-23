@@ -8,7 +8,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
   const ownerAddress = "0xCA7632327567796e51920F6b16373e92c7823854";
 
-  // await deploy("DGToken", {
   await deploy("DGToken", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
@@ -16,6 +15,27 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     log: true,
   });
 
+  const dgToken = await ethers.getContract("DGToken", deployer)
+
+  // await deploy("DGToken", {
+  await deploy("LevelingSVGNFT", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    args: [
+      "Leveling Collectible",
+      "LVC",
+      "0x7d7d3593f46ebdfd00438423f05eb762479a775c",
+      dgToken.address,
+    ],
+    log: true,
+  });
+
+  const Collectible = await ethers.getContract("LevelingSVGNFT", deployer);
+  // To take ownership of yourContract
+  // address you want to be the owner.
+  const tx = await Collectible.transferOwnership(ownerAddress);
+  console.log("Transferring ownership to::", ownerAddress);
+  console.log("Transfer Completed with txn hash:", tx.hash);
   // ToDo: Verify your contract with Etherscan for public chains
   // if (chainId !== "31337") {
   //   try {
@@ -36,4 +56,5 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-module.exports.tags = ["DGToken"];
+module.exports.tags = ["DGToken", "LevelingSVGNFT"];
+// module.exports.tags = ["DGToken", "LevelingSVGNFT"];

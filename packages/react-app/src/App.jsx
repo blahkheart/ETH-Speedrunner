@@ -81,8 +81,8 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-// const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-const targetNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const targetNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
@@ -553,12 +553,6 @@ function App(props) {
     );
   }
 
-  // const [yourJSON, setYourJSON] = useState(STARTING_JSON);
-  // const [sending, setSending] = useState();
-  // const [ipfsHash, setIpfsHash] = useState();
-  // const [ipfsDownHash, setIpfsDownHash] = useState();
-  // const [downloading, setDownloading] = useState();
-  // const [ipfsContent, setIpfsContent] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [minting, setMinting] = useState(false);
   const [count, setCount] = useState(1);
@@ -596,12 +590,6 @@ function App(props) {
   // const unlockData = JSON.parse(window.localStorage.getItem("unlock"));
   // const publicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
   useEffect(() => {
-    // if (unlockData && publicLockData) {
-    // const unlockAddress = unlockData.unlockAddress;
-    // const publicLockAddress = publicLockData.publicLockAddress;
-    //   setDeployedUnlockAddress(unlockAddress);
-    //   setPublicLockAddress(publicLockAddress);
-    // }
     const unlockAddress = "0x627118a4fB747016911e5cDA82e2E77C531e8206"; //deployed Unlock Contract Goerli
     const publicLockAddress = "0x4604392da245ada386bf90118ace7e787e2c221f"; //Lock on Goerli
     setDeployedUnlockAddress(unlockAddress);
@@ -683,16 +671,6 @@ function App(props) {
               Created Levels
             </Link>
           </Menu.Item>
-          {/* <Menu.Item key="/ipfsdown">
-            <Link
-              onClick={() => {
-                setRoute("/ipfsdown");
-              }}
-              to="/ipfsdown"
-            >
-              IPFS Download
-            </Link>
-          </Menu.Item> */}
           <Menu.Item key="/debugcontracts">
             <Link
               onClick={() => {
@@ -840,7 +818,7 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="DreadGang"
+              name="LevelingSVGNFT"
               signer={userSigner}
               provider={localProvider}
               address={address}
